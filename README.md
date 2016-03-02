@@ -82,6 +82,30 @@ foreach ($images as $page => $invoice) {
 }
 ```
 
+## Translations
+At first visit [core](https://github.com/WebChemistry/Invoice/blob/master/src/Translator.php) component.
+
+Change language:
+```php
+$invoce->getTranslator()->setLang('en');
+```
+
+Custom translator:
+```php
+
+class MyTranslator implements Nette\Localization\ITranslator {
+
+	public function translate($message, $count = NULL) { // $count is unnecessary
+		// ...
+	}
+
+}
+
+$invoice->setTranslator(new MyTranslator());
+```
+
+or you can send pull-request with your translation to core component.
+
 ## Previews
 
 First page:
