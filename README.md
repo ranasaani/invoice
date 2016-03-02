@@ -82,6 +82,14 @@ foreach ($images as $page => $invoice) {
 }
 ```
 
+## Memory optimization
+
+```php
+$invoice->setSave(function (Intervention\Image\Image $image, $page) {
+	$invoice->save(__DIR__ . "/invoice-$page.jpg");
+});
+```
+
 ## Translations
 At first visit [core](https://github.com/WebChemistry/Invoice/blob/master/src/Translator.php) component.
 
