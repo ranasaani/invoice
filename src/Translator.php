@@ -31,7 +31,8 @@ class Translator implements ITranslator {
 			'varSymbol' => 'Variabilní symbol',
 			'constSymbol' => 'Konstant. symbol',
 			'tax' => 'DPH',
-			'subtotal' => 'Mezisoučet'
+			'subtotal' => 'Mezisoučet',
+			'dueDate' => 'Datum splatnosti'
 		]
 	];
 

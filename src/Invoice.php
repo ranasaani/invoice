@@ -662,7 +662,7 @@ class Invoice extends Object {
 				$font->file($this->template->getIconFont());
 				$font->size(37);
 			});
-			$this->image->text('Datum splatnosti:', 1520, 705 + ($multiplier * 55), function (Font $font) {
+			$this->image->text($this->translate('dueDate') . ':', 1520, 705 + ($multiplier * 55), function (Font $font) {
 				$font->color($this->template->getPrimaryColor());
 				$font->size(27);
 				$font->file($this->template->getFont());
