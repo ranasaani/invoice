@@ -1,0 +1,13 @@
+{
+  "name": "webchemistry/invoice",
+  "type": "library",
+  "desc": "Generates invoices",
+  "tags": ["webchemistry", "invoice"],
+  "require": {
+    "nette/utils": "^2.3",
+    "intervention/image": "^2.3"
+  },
+  "autoload": {
+    "classmap": ["src/"]
+  }
+}
