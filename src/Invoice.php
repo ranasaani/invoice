@@ -509,7 +509,7 @@ class Invoice extends Object {
 			$shape->background($this->template->getColorEven());
 		});
 
-		$this->image->text('Částka:', 1800, $plus + 65, function (Font $font) {
+		$this->image->text($this->translate('subtotal') . ':', 1800, $plus + 65, function (Font $font) {
 			$font->align('center');
 			$font->color($this->template->getFontColor());
 			$font->file($this->template->getFontBold());

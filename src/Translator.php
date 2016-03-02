@@ -30,7 +30,8 @@ class Translator implements ITranslator {
 			'iban' => 'Iban',
 			'varSymbol' => 'Variabilní symbol',
 			'constSymbol' => 'Konstant. symbol',
-			'tax' => 'DPH'
+			'tax' => 'DPH',
+			'subtotal' => 'Mezisoučet'
 		]
 	];
 
