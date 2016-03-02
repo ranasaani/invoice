@@ -80,6 +80,11 @@ $images = $invoice->create($customer, $payment);
 foreach ($images as $page => $invoice) {
 	$invoice->save(__DIR__ . "/invoice-$page.jpg");
 }
+
+// Show first page
+
+header('Content-Type: image/jpeg');
+echo $images[0]->encode();
 ```
 
 ## Memory optimization
