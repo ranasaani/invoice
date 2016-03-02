@@ -28,7 +28,7 @@ class Payment {
 	protected $invoiceNumber;
 
 	/** @var \DateTime */
-	protected $maturityDate;
+	protected $dueDate;
 
 	/** @var string */
 	protected $variableSymbol;
@@ -203,16 +203,16 @@ class Payment {
 	/**
 	 * @return \DateTime
 	 */
-	public function getMaturityDate() {
-		return $this->maturityDate;
+	public function getDueDate() {
+		return $this->dueDate;
 	}
 
 	/**
-	 * @param \DateTime $maturityDate
+	 * @param \DateTime $dueDate
 	 * @return self
 	 */
-	public function setMaturityDate(\DateTime $maturityDate) {
-		$this->maturityDate = $maturityDate;
+	public function setDueDate(\DateTime $dueDate) {
+		$this->dueDate = $dueDate;
 
 		return $this;
 	}

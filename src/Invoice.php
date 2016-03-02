@@ -656,7 +656,7 @@ class Invoice extends Object {
 	protected function paymentInformation() {
 		$multiplier = 0;
 
-		if ($this->payment->getMaturityDate()) {
+		if ($this->payment->getDueDate()) {
 			$this->image->text('&#xe660;', 1445, 710 + ($multiplier * 55), function (Font $font) {
 				$font->color($this->template->getPrimaryColor());
 				$font->file($this->template->getIconFont());
@@ -667,7 +667,7 @@ class Invoice extends Object {
 				$font->size(27);
 				$font->file($this->template->getFont());
 			});
-			$this->image->text($this->payment->getMaturityDate()->format('d/m/Y'), 1850, 705 + ($multiplier * 55), function (Font $font) {
+			$this->image->text($this->payment->getDueDate()->format('d/m/Y'), 1850, 705 + ($multiplier * 55), function (Font $font) {
 				$font->size(27);
 				$font->file($this->template->getFont());
 				$font->color($this->template->getFontColor());
