@@ -85,6 +85,8 @@ foreach ($images as $page => $invoice) {
 ## Translations
 At first visit [core](https://github.com/WebChemistry/Invoice/blob/master/src/Translator.php) component.
 
+Supported languages: English (en), Czech (cs)
+
 Change language:
 ```php
 $invoce->getTranslator()->setLang('en');
@@ -109,7 +111,7 @@ or you can send pull-request with your translation to core component.
 ## Previews
 
 First page:
-![first page](http://i.imgbox.com/aykrwnkq.jpg)
+![first page](http://i.imgbox.com/pwFByZ1L.jpg)
 
 Second page:
-![second page](http://i.imgbox.com/7fvkelxr.jpg)
+![second page](http://i.imgbox.com/ebrwXldf.jpg)
