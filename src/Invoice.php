@@ -368,7 +368,7 @@ class Invoice extends Object {
 			$size = @getimagesize($this->company->getLogo());
 
 			if ($size) {
-				$this->image->insert($this->company->getLogo(), 'top-left', (int) ((980 - $size[0]) / 2), 50);
+				$this->image->insert($this->company->getLogo(), 'top-left', (int) ((980 - $size[0]) / 2), (int) ((186 - $size[1]) / 2));
 			}
 		}
 
