@@ -125,6 +125,31 @@ class Invoice extends Object {
 	/************************* Rendering **************************/
 
 	/**
+	 * @return string Encoded invoice
+	 */
+	public function generatePreview() {
+		$customer = new Customer('John Doe', 'Los Angeles', 'Cavetown', '720 55', 'USA');
+		$customer->setTin('08304431');
+		$customer->setVaTin('CZ08304431');
+
+		$payment = new Payment('2353462013/0800', 'Kč', '20150004');
+		$payment->setIBan('CZ4808000000002353462013');
+		$payment->setSwift('GIGACZPX');
+		$payment->setDueDate(new \DateTime('+ 7 days'));
+
+		$payment->addItem(new Item('Logitech G700s Rechargeable Gaming Mouse', 4, 1790));
+		$payment->addItem(new Item('ASUS Z380KL 8" - 16GB, LTE, bílá', 1, 6490));
+		$payment->addItem(new Item('Philips 48PFS6909 - 121cm', 1, 13990));
+		$payment->addItem(new Item('HP Deskjet 3545 Advantage', 1, 1799));
+		$payment->addItem(new Item('LG 105UC9V - 266cm', 2, 2199990));
+
+		$images = $this->create($customer, $payment);
+		$this->image = NULL;
+
+		return $images[0]->encode();
+	}
+
+	/**
 	 * @param Customer $customer
 	 * @param Payment $payment
 	 * @throws Exception
@@ -133,9 +158,6 @@ class Invoice extends Object {
 	public function create(Customer $customer, Payment $payment) {
 		$this->customer = $customer;
 		$this->payment = $payment;
-		$customer->check();
-		$payment->check();
-		$this->company->check();
 		$this->paginator = $paginator = $this->template->getPaginator();
 		$paginator->setItems($payment->getItems());
 		$return = [];
@@ -488,6 +510,7 @@ class Invoice extends Object {
 	}
 
 	/**
+	 * @param bool $useTax
 	 * @return int
 	 */
 	private function getTotalPrice($useTax = FALSE) {

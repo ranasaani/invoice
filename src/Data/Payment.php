@@ -38,23 +38,12 @@ class Payment {
 
 	/** @var \DateTime */
 	protected $date;
-	
-	/** @var array */
-	private $important = ['accountNumber', 'currency', 'date', 'invoiceNumber', 'items'];
 
-	public function __construct() {
+	public function __construct($accountNumber, $currency, $invoiceNumber) {
+		$this->setAccountNumber($accountNumber);
+		$this->setCurrency($currency);
+		$this->setInvoiceNumber($invoiceNumber);
 		$this->date = new \DateTime();
-	}
-
-	public function check() {
-		foreach ($this->important as $item) {
-			if (!$this->$item) {
-				throw new Exception("Parameter '$item' must be set.");
-			}
-		}
-		if (!$this->tax) {
-			throw new Exception("Parameter 'tax' must be set.");
-		}
 	}
 
 	/**
@@ -161,7 +150,6 @@ class Payment {
 	 * @return self
 	 */
 	public function addItem(Item $item) {
-		$item->check();
 		$this->items[] = $item;
 
 		return $this;

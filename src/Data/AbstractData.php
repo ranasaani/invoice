@@ -28,21 +28,19 @@ abstract class AbstractData extends Object {
 	/** @var string */
 	protected $vaTin;
 
-	/** @var array */
-	private $important = ['name', 'town', 'address', 'zip', 'country'];
-
 	/**
-	 * @throws Exception
+	 * @param string $name
+	 * @param string $town
+	 * @param string $address
+	 * @param string $zip
+	 * @param string $country
 	 */
-	public function check() {
-		foreach ($this->important as $item) {
-			if (!$this->$item) {
-				throw new Exception("Parameter '$item' must be set.");
-			}
-		}
-		if ($this->vaTin && !$this->tin) {
-			throw new Exception("Parameter 'ic' must be set.");
-		}
+	public function __construct($name, $town, $address, $zip, $country) {
+		$this->setName($name);
+		$this->setTown($town);
+		$this->setAddress($address);
+		$this->setZip($zip);
+		$this->setCountry($country);
 	}
 
 	/**

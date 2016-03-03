@@ -11,14 +11,9 @@ composer require webchemistry/invoice
 ### Company data
 
 ```php
-$company = new \WebChemistry\Invoice\Data\Company();
+$company = new Company('John Doe', 'Los Angeles', 'Cavetown', '720 55', 'USA');
 
-$company->setAddress('address');
-$company->setCountry('country');
 $company->setFooter('footer');
-$company->setName('name');
-$company->setTown('town');
-$company->setZip('77777');
 $company->setTin('1111');
 $company->setVaTin('CZ1111');
 $company->setLogo(__DIR__ . '/logo.png'); // Recommended height is 106px
@@ -28,39 +23,25 @@ $company->setIsTax(TRUE);
 ### Customer data
 
 ```php
-$customer = new \WebChemistry\Invoice\Data\Customer();
-
-$customer->setAddress('address');
-$customer->setCountry('country');
-$customer->setTin('2222');
-$customer->setVaTin('CZ2222');
-$customer->setTown('town');
-$customer->setName('name');
-$customer->setZip('77777');
+$customer = new Customer('John Doe', 'Los Angeles', 'Cavetown', '720 55', 'USA');
+$customer->setTin('08304431');
+$customer->setVaTin('CZ08304431');
 ```
 
 ### Payment data
 
 ```php
 $payment->setAccountNumber('1111');
-$payment->setConstantSymbol('2222');
-$payment->setVariableSymbol('3333');
-$payment->setCurrency('Kč');
-$payment->setIBan('4444');
-$payment->setSwift('5555');
-$payment->setMaturityDate(new \DateTime('+ 7 days'));
-$payment->setInvoiceNumber(20160001);
+$payment = new Payment('2353462013/0800', 'Kč', '20150004');
+$payment->setIBan('CZ4808000000002353462013');
+$payment->setSwift('GIGACZPX');
+$payment->setDueDate(new \DateTime('+ 7 days'));
 ```
 
 Adding items
 
 ```php
-$item = new \WebChemistry\Invoice\Data\Item();
-$item->setName('item');
-$item->setCount(rand(1,3));
-$item->setPrice(rand(999, 100000));
-
-$payment->addItem($item);
+$payment->addItem(new Item('Logitech G700s Rechargeable Gaming Mouse', 4, 1790));
 ```
 
 ### Customizing template
@@ -120,6 +101,13 @@ $invoice->setTranslator(new MyTranslator());
 ```
 
 or you can send pull-request with your translation to core component.
+
+## Generating preview
+
+```php
+header('Content-Type: image/jpeg');
+echo $invoice->generatePreview();
+```
 
 ## Nette DI
 

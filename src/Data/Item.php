@@ -19,13 +19,17 @@ class Item {
 	private $important = ['name', 'count', 'price'];
 
 	/**
-	 * @throws Exception
+	 * @param string $name
+	 * @param int $count
+	 * @param int $price
 	 */
-	public function check() {
-		foreach ($this->important as $item) {
-			if (!$this->$item) {
-				throw new Exception("Parameter '$item' must be set.");
-			}
+	public function __construct($name = NULL, $count = NULL, $price = NULL) {
+		$this->setName($name);
+		if ($count) {
+			$this->setCount($count);
+		}
+		if ($price) {
+			$this->setPrice($price);
 		}
 	}
 

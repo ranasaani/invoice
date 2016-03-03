@@ -8,20 +8,30 @@ class InvoiceExtension extends CompilerExtension {
 
 	/** @var array */
 	public $defaults = [
-		'company' => [],
+		'company' => [
+			'name' => NULL,
+			'town' => NULL,
+			'address' => NULL,
+			'zip' => NULL,
+			'country' => NULL
+		],
 	];
 
 	public function loadConfiguration() {
 		$builder = $this->getContainerBuilder();
 		$config = $this->validateConfig($this->defaults);
 
-		$cmp = $builder->addDefinition($this->prefix('company'))
-			->setClass('WebChemistry\Invoice\Data\Company');
+		$company = $config['company'];
 
-		foreach ($config['company'] as $name => $value) {
-			$cmp->addSetup($name, [$value]);
+		$cmp = $builder->addDefinition($this->prefix('company'))
+			->setClass('WebChemistry\Invoice\Data\Company', [
+				$company['name'], $company['town'], $company['address'], $company['zip'], $company['country']
+			]);
+		unset($company['name'], $company['town'], $company['address'], $company['zip'], $company['country']);
+
+		foreach ($company as $name => $value) {
+			$cmp->addSetup('set' . ucfirst($name), [$value]);
 		}
-		$cmp->addSetup('check()');
 
 		$builder->addDefinition($this->prefix('template'))
 			->setClass('WebChemistry\Invoice\Data\Template');
