@@ -39,8 +39,11 @@ class Payment {
 	/** @var \DateTime */
 	protected $date;
 
-	public function __construct($accountNumber, $currency, $invoiceNumber) {
-		$this->setAccountNumber($accountNumber);
+	/**
+	 * @param string $currency
+	 * @param int $invoiceNumber
+	 */
+	public function __construct($currency, $invoiceNumber) {
 		$this->setCurrency($currency);
 		$this->setInvoiceNumber($invoiceNumber);
 		$this->date = new \DateTime();
