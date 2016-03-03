@@ -121,6 +121,38 @@ $invoice->setTranslator(new MyTranslator());
 
 or you can send pull-request with your translation to core component.
 
+## Nette DI
+
+```yaml
+extensions:
+	invoice: WebChemistry\Invoice\DI\InvoiceExtension
+
+invoice:
+	company:
+		name:
+		town:
+		address:
+		zip:
+		country:
+		## Optional
+		tin:
+		vaTin:
+		logo:
+		footer:
+		isTax:
+```
+
+```php
+
+class Component {
+
+	public function __construct(WebChemistry\Invoice\Invoice $invoice) {
+		// ...
+	}
+}
+
+```
+
 ## Previews
 
 First page:
