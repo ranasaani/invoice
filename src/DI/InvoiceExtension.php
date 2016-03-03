@@ -15,6 +15,7 @@ class InvoiceExtension extends CompilerExtension {
 			'zip' => NULL,
 			'country' => NULL
 		],
+		'lang' => 'en'
 	];
 
 	public function loadConfiguration() {
@@ -37,7 +38,8 @@ class InvoiceExtension extends CompilerExtension {
 			->setClass('WebChemistry\Invoice\Data\Template');
 
 		$builder->addDefinition($this->prefix('invoice'))
-			->setClass('WebChemistry\Invoice\Invoice', [$this->prefix('@company'), $this->prefix('@template')]);
+			->setClass('WebChemistry\Invoice\Invoice', [$this->prefix('@company'), $this->prefix('@template')])
+			->addSetup('?->getTranslator()->setLang(?)', ['@self', $config['lang']]);
 	}
 
 }

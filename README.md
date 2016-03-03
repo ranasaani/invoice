@@ -116,6 +116,7 @@ extensions:
 	invoice: WebChemistry\Invoice\DI\InvoiceExtension
 
 invoice:
+	lang: en
 	company:
 		name:
 		town:
