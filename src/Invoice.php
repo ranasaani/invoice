@@ -6,18 +6,17 @@ use Intervention\Image\AbstractShape;
 use Intervention\Image\Gd\Font;
 use Intervention\Image\Image;
 use Intervention\Image\ImageManagerStatic;
-use Nette\Localization\ITranslator;
-use Nette\Object;
-use Nette\Utils\Callback;
-use WebChemistry\Invoice\Components\Paginator;
+use WebChemistry\Invoice\Components\IPaginator;
+use WebChemistry\Invoice\Components\IPaginatorFactory;
+use WebChemistry\Invoice\Components\PaginatorFactory;
 use WebChemistry\Invoice\Data\Company;
 use WebChemistry\Invoice\Data\Customer;
 use WebChemistry\Invoice\Data\Item;
-use WebChemistry\Invoice\Data\Payment;
+use WebChemistry\Invoice\Data\Order;
 use WebChemistry\Invoice\Data\Template;
 use Nette\Utils\Strings;
 
-class Invoice extends Object {
+class Invoice {
 
 	/** @var Company */
 	protected $company;
@@ -25,8 +24,8 @@ class Invoice extends Object {
 	/** @var Template */
 	private $template;
 	
-	/** @var Payment */
-	private $payment;
+	/** @var Order */
+	private $order;
 	
 	/** @var Customer */
 	private $customer;
@@ -37,31 +36,32 @@ class Invoice extends Object {
 	/** @var Translator */
 	private $translator;
 
-	/** @var Paginator */
-	private $paginator;
-
 	/** @var callable */
-	private $formatNumber;
+	private $formatNumberCallback;
 
-	/** @var callable */
-	private $save;
+	/** @var IPaginatorFactory */
+	private $paginatorFactory;
 
 	/**
 	 * @param Company $company
 	 * @param Template $template
+	 * @param ITranslator $translator
+	 * @param IPaginatorFactory $paginatorFactory
 	 */
-	public function __construct(Company $company, Template $template = NULL) {
+	public function __construct(Company $company, Template $template = NULL, ITranslator $translator = NULL,
+								IPaginatorFactory $paginatorFactory = NULL) {
 		$this->company = $company;
 		$this->template = $template ? : new Template();
-		$this->translator = new Translator();
+		$this->translator = $translator ? : new Translator();
+		$this->paginatorFactory = $paginatorFactory ? : new PaginatorFactory();
 	}
 
 	/**
 	 * @param callable $callback
 	 * @return self
 	 */
-	public function setFormatNumber($callback) {
-		$this->formatNumber = Callback::check($callback);
+	public function setFormatNumberCallback(callable $callback) {
+		$this->formatNumberCallback = $callback;
 
 		return $this;
 	}
@@ -72,39 +72,9 @@ class Invoice extends Object {
 	 * @return string
 	 */
 	private function formatNumber($float, $decimals = 2) {
-		$call = $this->formatNumber;
-
-		return $call ? $call($float, $decimals) : number_format($float, $decimals);
-	}
-
-	/**
-	 * @param ITranslator $translator
-	 * @return self
-	 */
-	public function setTranslator(ITranslator $translator) {
-		$this->translator = $translator;
-
-		return $this;
-	}
-	
-	/**
-	 * @param Template $template
-	 * @return self
-	 */
-	public function setTemplate(Template $template) {
-		$this->template = $template;
-
-		return $this;
-	}
-
-	/**
-	 * @param callable $callback
-	 * @return self
-	 */
-	public function setSave($callback) {
-		$this->save = Callback::check($callback);
-
-		return $this;
+		return $this->formatNumberCallback ?
+			call_user_func($this->formatNumberCallback, $float, $decimals) :
+			number_format($float, $decimals);
 	}
 
 	/**
@@ -115,61 +85,49 @@ class Invoice extends Object {
 		return $this->translator->translate($message);
 	}
 
-	/**
-	 * @return Translator
-	 */
-	public function getTranslator() {
-		return $this->translator;
-	}
-
 	/************************* Rendering **************************/
 
 	/**
 	 * @return string Encoded invoice
 	 */
 	public function generatePreview() {
-		$customer = new Customer('John Doe', 'Los Angeles', 'Cavetown', '720 55', 'USA');
-		$customer->setTin('08304431');
-		$customer->setVaTin('CZ08304431');
+		$factory = new InvoiceFactory();
 
-		$payment = new Payment('2353462013/0800', 'Kč', '20150004');
-		$payment->setIBan('CZ4808000000002353462013');
-		$payment->setSwift('GIGACZPX');
-		$payment->setDueDate(new \DateTime('+ 7 days'));
+		$tax = $this->company->hasTax() ? 0.21 : NULL;
+		$customer = $factory->createCustomer('John Doe', 'Los Angeles', 'Cavetown', '720 55', 'USA', '08304431', 'CZ08304431');
 
-		$payment->addItem(new Item('Logitech G700s Rechargeable Gaming Mouse', 4, 1790));
-		$payment->addItem(new Item('ASUS Z380KL 8" - 16GB, LTE, bílá', 1, 6490));
-		$payment->addItem(new Item('Philips 48PFS6909 - 121cm', 1, 13990));
-		$payment->addItem(new Item('HP Deskjet 3545 Advantage', 1, 1799));
-		$payment->addItem(new Item('LG 105UC9V - 266cm', 2, 2199990));
+		$account = $factory->createAccount('2353462013/0800', 'CZ4808000000002353462013', 'GIGACZPX');
+		$paymentInfo = $factory->createPaymentInformation('Kč', '0123456789', '1234', $tax);
 
-		$images = $this->create($customer, $payment);
-		$this->image = NULL;
+		$order = $factory->createOrder(date('Y') . '0001', new \DateTime('+ 7 days'), $account, $paymentInfo);
+		$order->addItem('Logitech G700s Rechargeable Gaming Mouse', 4, 1790);
+		$order->addItem('ASUS Z380KL 8" - 16GB, LTE, bílá', 1, 6490);
+		$order->addItem('Philips 48PFS6909 - 121cm', 1, 13990);
+		$order->addItem('HP Deskjet 3545 Advantage', 1, 1799);
+		$order->addItem('LG 105UC9V - 266cm', 2, 11599);
+
+		$images = $this->create($customer, $order);
 
 		return $images[0]->encode();
 	}
 
 	/**
 	 * @param Customer $customer
-	 * @param Payment $payment
-	 * @throws Exception
+	 * @param Order $order
+	 * @throws InvoiceException
 	 * @return Image[]
 	 */
-	public function create(Customer $customer, Payment $payment) {
+	public function create(Customer $customer, Order $order) {
 		$this->customer = $customer;
-		$this->payment = $payment;
-		$this->paginator = $paginator = $this->template->getPaginator();
-		$paginator->setItems($payment->getItems());
-		$return = [];
-		$save = $this->save;
+		$this->order = $order;
+		$paginator = $this->paginatorFactory->createPaginator($order->getItems());
+		$pages = [];
 
-		for ($page = 1; $paginator->getTotalPages() >= $page; $page++) {
-			$paginator->setCurrentPage($page);
-
+		while ($paginator->nextPage()) {
 			$this->initialize();
 
 			$this->rightHeader();
-			$this->footer();
+			$this->footer($paginator);
 			$this->paymentInformation();
 			$this->customer();
 
@@ -183,7 +141,7 @@ class Invoice extends Object {
 
 			// Last page price
 			if ($paginator->isLastPage()) {
-				if ($this->company->isTax()) {
+				if ($this->company->hasTax() && $order->getPayment()->getTax() !== NULL) {
 					$this->tax($plus);
 				}
 
@@ -192,16 +150,14 @@ class Invoice extends Object {
 				}
 			}
 
-			if ($save) {
-				$save($page);
-			} else {
-				$return[] = $this->image;
-			}
+			$pages[] = $this->image;
 		}
 		$this->image = NULL;
 
-		return $return;
+		return $pages;
 	}
+
+	// Template
 
 	protected function customer() {
 		$text = Strings::upper($this->translate('subscriber'));
@@ -281,7 +237,7 @@ class Invoice extends Object {
 	}
 
 	protected function rightHeader() {
-		$this->image->text($this->translate('date') . ': ' . $this->payment->getDate()->format('d/m/Y'), 1700, 180, function (Font $font) {
+		$this->image->text($this->translate('date') . ': ' . $this->order->getCreated()->format('d/m/Y'), 1700, 180, function (Font $font) {
 			$font->file($this->template->getFont());
 			$font->size(25);
 			$font->color($this->template->getColorOdd());
@@ -296,7 +252,7 @@ class Invoice extends Object {
 			$font->file($this->template->getFontBold());
 		});
 
-		$this->image->text($this->translate('invoiceNumber') . ': ' . $this->payment->getInvoiceNumber(), 1700, 230, function (Font $font) {
+		$this->image->text($this->translate('invoiceNumber') . ': ' . $this->order->getNumber(), 1700, 230, function (Font $font) {
 			$font->file($this->template->getFont());
 			$font->size(25);
 			$font->color($this->template->getColorOdd());
@@ -364,15 +320,15 @@ class Invoice extends Object {
 		});
 
 		// Company address (Left header)
-		if ($this->company->getLogo()) {
-			$size = @getimagesize($this->company->getLogo());
+		if ($this->template->getLogo()) {
+			$size = @getimagesize($this->template->getLogo());
 
 			if ($size) {
-				$this->image->insert($this->company->getLogo(), 'top-left', (int) ((980 - $size[0]) / 2), (int) ((186 - $size[1]) / 2));
+				$this->image->insert($this->template->getLogo(), 'top-left', (int) ((980 - $size[0]) / 2), (int) ((186 - $size[1]) / 2));
 			}
 		}
 
-		$y = $this->company->getLogo() ? 220 : 120;
+		$y = isset($size) ? 220 : 120;
 
 		$this->image->text($this->company->getZip() . ' ' . $this->company->getTown(), 450, $y, function (Font $font) {
 			$font->file($this->template->getFont());
@@ -414,7 +370,7 @@ class Invoice extends Object {
 			$multiplier++;
 		}
 
-		$this->image->text($this->company->isTax() ? $this->translate('taxPay') : $this->translate('notTax'),
+		$this->image->text($this->company->hasTax() ? $this->translate('taxPay') : $this->translate('notTax'),
 			520, $y + ($multiplier * 50), function (Font $font) {
 			$font->file($this->template->getFont());
 			$font->color($this->template->getColorOdd());
@@ -454,7 +410,7 @@ class Invoice extends Object {
 			$shape->background($this->template->getFontColor());
 		});
 
-		$this->image->text($this->company->getFooter(), $this->image->getWidth() / 2, $this->image->getHeight() - 40, function (Font $font) {
+		$this->image->text($this->template->getFooter(), $this->image->getWidth() / 2, $this->image->getHeight() - 40, function (Font $font) {
 			$font->file($this->template->getFont());
 			$font->color($this->template->getColorOdd());
 			$font->align('center');
@@ -463,8 +419,8 @@ class Invoice extends Object {
 		});
 	}
 
-	protected function footer() {
-		$this->image->text($this->translate('page') . ' ' . $this->paginator->getCurrentPage() . ' ' . $this->translate('from') . ' ' . $this->paginator->getTotalPages(),
+	protected function footer(IPaginator $paginator) {
+		$this->image->text($this->translate('page') . ' ' . $paginator->getCurrentPage() . ' ' . $this->translate('from') . ' ' . $paginator->getTotalPages(),
 			$this->image->getWidth() - 40, $this->image->getHeight() - 40, function (Font $font) {
 				$font->file($this->template->getFont());
 				$font->valign('center');
@@ -499,7 +455,7 @@ class Invoice extends Object {
 			$font->size(37);
 		});
 
-		$this->image->text($this->formatNumber($this->getTotalPrice(TRUE)) . ' ' . $this->payment->getCurrency(), 2260, $plus + 65, function (Font $font) {
+		$this->image->text($this->formatNumber($this->getTotalPrice(TRUE)) . ' ' . $this->order->getPayment()->getCurrency(), 2260, $plus + 65, function (Font $font) {
 			$font->align('center');
 			$font->color($this->template->getColorOdd());
 			$font->file($this->template->getFontBold());
@@ -515,9 +471,13 @@ class Invoice extends Object {
 	 */
 	private function getTotalPrice($useTax = FALSE) {
 		$total = 0;
-		$tax = $useTax && $this->company->isTax() ? $this->payment->getTax() + 1 : 1;
+		if ($useTax && $this->company->hasTax() && $this->order->getPayment()->getTax() !== NULL) {
+			$tax = $this->order->getPayment()->getTax() + 1;
+		} else {
+			$tax = 1;
+		}
 
-		foreach ($this->payment->getItems() as $item) {
+		foreach ($this->order->getItems() as $item) {
 			$total += $item->getPrice() * $item->getCount();
 		}
 
@@ -539,7 +499,7 @@ class Invoice extends Object {
 			$font->size(37);
 		});
 
-		$this->image->text($this->formatNumber($this->getTotalPrice(FALSE)) . ' ' . $this->payment->getCurrency(), 2260, $plus + 65, function (Font $font) {
+		$this->image->text($this->formatNumber($this->getTotalPrice(FALSE)) . ' ' . $this->order->getPayment()->getCurrency(), 2260, $plus + 65, function (Font $font) {
 			$font->align('center');
 			$font->color($this->template->getFontColor());
 			$font->file($this->template->getFont());
@@ -559,7 +519,7 @@ class Invoice extends Object {
 			$font->size(37);
 		});
 
-		$this->image->text($this->payment->getTax() * 100 . ' %', 2260, $plus + 65, function (Font $font) {
+		$this->image->text($this->order->getPayment()->getTax() * 100 . ' %', 2260, $plus + 65, function (Font $font) {
 			$font->align('center');
 			$font->color($this->template->getFontColor());
 			$font->file($this->template->getFont());
@@ -610,7 +570,7 @@ class Invoice extends Object {
 			$font->color($this->template->getFontColor());
 		});
 
-		$this->image->text($this->formatNumber($item->getPrice()) . ' ' . $this->payment->getCurrency(), 1650, 1350 + $plus, function (Font $font) {
+		$this->image->text($this->formatNumber($item->getPrice()) . ' ' . $this->order->getPayment()->getCurrency(), 1650, 1350 + $plus, function (Font $font) {
 			$font->size(27);
 			$font->file($this->template->getFont());
 			$font->valign('center');
@@ -618,7 +578,7 @@ class Invoice extends Object {
 			$font->color($this->template->getFontColor());
 		});
 
-		$this->image->text($this->formatNumber($item->getCount() * $item->getPrice()) . ' ' . $this->payment->getCurrency(), 2322, 1350 + $plus, function (Font $font) {
+		$this->image->text($this->formatNumber($item->getCount() * $item->getPrice()) . ' ' . $this->order->getPayment()->getCurrency(), 2322, 1350 + $plus, function (Font $font) {
 			$font->size(27);
 			$font->file($this->template->getFontBold());
 			$font->valign('center');
@@ -679,7 +639,7 @@ class Invoice extends Object {
 	protected function paymentInformation() {
 		$multiplier = 0;
 
-		if ($this->payment->getDueDate()) {
+		if ($this->order->getDueDate()) {
 			$this->image->text('&#xe660;', 1445, 710 + ($multiplier * 55), function (Font $font) {
 				$font->color($this->template->getPrimaryColor());
 				$font->file($this->template->getIconFont());
@@ -690,7 +650,7 @@ class Invoice extends Object {
 				$font->size(27);
 				$font->file($this->template->getFont());
 			});
-			$this->image->text($this->payment->getDueDate()->format('d/m/Y'), 1850, 705 + ($multiplier * 55), function (Font $font) {
+			$this->image->text($this->order->getDueDate()->format('d/m/Y'), 1850, 705 + ($multiplier * 55), function (Font $font) {
 				$font->size(27);
 				$font->file($this->template->getFont());
 				$font->color($this->template->getFontColor());
@@ -698,7 +658,7 @@ class Invoice extends Object {
 			$multiplier++;
 		}
 
-		if ($this->payment->getAccountNumber()) {
+		if ($this->order->getAccount()->getAccountNumber()) {
 			$this->image->text('&#xe645;', 1445, 710 + ($multiplier * 55), function (Font $font) {
 				$font->color($this->template->getPrimaryColor());
 				$font->file($this->template->getIconFont());
@@ -709,7 +669,7 @@ class Invoice extends Object {
 				$font->size(27);
 				$font->file($this->template->getFont());
 			});
-			$this->image->text($this->payment->getAccountNumber(), 1850, 705 + ($multiplier * 55), function (Font $font) {
+			$this->image->text($this->order->getAccount()->getAccountNumber(), 1850, 705 + ($multiplier * 55), function (Font $font) {
 				$font->size(27);
 				$font->file($this->template->getFont());
 				$font->color($this->template->getFontColor());
@@ -717,7 +677,7 @@ class Invoice extends Object {
 			$multiplier++;
 		}
 
-		if ($this->payment->getIBan()) {
+		if ($this->order->getAccount()->getIBan()) {
 			$this->image->text('&#xe645;', 1445, 710 + ($multiplier * 55), function (Font $font) {
 				$font->color($this->template->getPrimaryColor());
 				$font->file($this->template->getIconFont());
@@ -728,7 +688,7 @@ class Invoice extends Object {
 				$font->size(27);
 				$font->file($this->template->getFont());
 			});
-			$this->image->text($this->payment->getIBan(), 1850, 705 + ($multiplier * 55), function (Font $font) {
+			$this->image->text($this->order->getAccount()->getIBan(), 1850, 705 + ($multiplier * 55), function (Font $font) {
 				$font->size(27);
 				$font->file($this->template->getFont());
 				$font->color($this->template->getFontColor());
@@ -736,7 +696,7 @@ class Invoice extends Object {
 			$multiplier++;
 		}
 
-		if ($this->payment->getSwift()) {
+		if ($this->order->getAccount()->getSwift()) {
 			$this->image->text('&#xe645;', 1445, 710 + ($multiplier * 55), function (Font $font) {
 				$font->color($this->template->getPrimaryColor());
 				$font->file($this->template->getIconFont());
@@ -747,7 +707,7 @@ class Invoice extends Object {
 				$font->size(27);
 				$font->file($this->template->getFont());
 			});
-			$this->image->text($this->payment->getSwift(), 1850, 705 + ($multiplier * 55), function (Font $font) {
+			$this->image->text($this->order->getAccount()->getSwift(), 1850, 705 + ($multiplier * 55), function (Font $font) {
 				$font->size(27);
 				$font->file($this->template->getFont());
 				$font->color($this->template->getFontColor());
@@ -755,7 +715,7 @@ class Invoice extends Object {
 			$multiplier++;
 		}
 
-		if ($this->payment->getVariableSymbol()) {
+		if ($this->order->getPayment()->getVariableSymbol()) {
 			$this->image->text('&#xe6a3;', 1455, 710 + ($multiplier * 55), function (Font $font) {
 				$font->color($this->template->getPrimaryColor());
 				$font->file($this->template->getIconFont());
@@ -766,7 +726,7 @@ class Invoice extends Object {
 				$font->size(27);
 				$font->file($this->template->getFont());
 			});
-			$this->image->text($this->payment->getVariableSymbol(), 1850, 705 + ($multiplier * 55), function (Font $font) {
+			$this->image->text($this->order->getPayment()->getVariableSymbol(), 1850, 705 + ($multiplier * 55), function (Font $font) {
 				$font->size(27);
 				$font->file($this->template->getFont());
 				$font->color($this->template->getFontColor());
@@ -774,7 +734,7 @@ class Invoice extends Object {
 			$multiplier++;
 		}
 
-		if ($this->payment->getConstantSymbol()) {
+		if ($this->order->getPayment()->getConstantSymbol()) {
 			$this->image->text('&#xe6a3;', 1455, 710 + ($multiplier * 55), function (Font $font) {
 				$font->color($this->template->getPrimaryColor());
 				$font->file($this->template->getIconFont());
@@ -785,7 +745,7 @@ class Invoice extends Object {
 				$font->size(27);
 				$font->file($this->template->getFont());
 			});
-			$this->image->text($this->payment->getConstantSymbol(), 1850, 705 + ($multiplier * 55), function (Font $font) {
+			$this->image->text($this->order->getPayment()->getConstantSymbol(), 1850, 705 + ($multiplier * 55), function (Font $font) {
 				$font->size(27);
 				$font->file($this->template->getFont());
 				$font->color($this->template->getFontColor());
@@ -803,7 +763,7 @@ class Invoice extends Object {
 			$font->size(27);
 			$font->file($this->template->getFont());
 		});
-		$this->image->text($this->formatNumber($this->getTotalPrice(TRUE)) . ' ' . $this->payment->getCurrency(), 1850, 705 + ($multiplier * 55), function (Font $font) {
+		$this->image->text($this->formatNumber($this->getTotalPrice(TRUE)) . ' ' . $this->order->getPayment()->getCurrency(), 1850, 705 + ($multiplier * 55), function (Font $font) {
 			$font->size(27);
 			$font->file($this->template->getFont());
 			$font->color($this->template->getFontColor());

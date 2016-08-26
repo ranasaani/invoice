@@ -3,6 +3,13 @@
 namespace WebChemistry\Invoice\DI;
 
 use Nette\DI\CompilerExtension;
+use WebChemistry\Invoice\Components\IPaginatorFactory;
+use WebChemistry\Invoice\Components\PaginatorFactory;
+use WebChemistry\Invoice\Data\Company;
+use WebChemistry\Invoice\Data\Template;
+use WebChemistry\Invoice\Invoice;
+use WebChemistry\Invoice\ITranslator;
+use WebChemistry\Invoice\Translator;
 
 class InvoiceExtension extends CompilerExtension {
 
@@ -13,7 +20,9 @@ class InvoiceExtension extends CompilerExtension {
 			'town' => NULL,
 			'address' => NULL,
 			'zip' => NULL,
-			'country' => NULL
+			'country' => NULL,
+			'tin' => NULL,
+			'vaTin' => NULL,
 		],
 		'lang' => 'en'
 	];
@@ -22,24 +31,25 @@ class InvoiceExtension extends CompilerExtension {
 		$builder = $this->getContainerBuilder();
 		$config = $this->validateConfig($this->defaults);
 
-		$company = $config['company'];
-
-		$cmp = $builder->addDefinition($this->prefix('company'))
-			->setClass('WebChemistry\Invoice\Data\Company', [
-				$company['name'], $company['town'], $company['address'], $company['zip'], $company['country']
-			]);
-		unset($company['name'], $company['town'], $company['address'], $company['zip'], $company['country']);
-
-		foreach ($company as $name => $value) {
-			$cmp->addSetup('set' . ucfirst($name), [$value]);
-		}
+		$builder->addDefinition($this->prefix('company'))
+			->setClass(Company::class, array_values($config['company']));
 
 		$builder->addDefinition($this->prefix('template'))
-			->setClass('WebChemistry\Invoice\Data\Template');
+			->setClass(Template::class);
+
+		$builder->addDefinition($this->prefix('paginatorFactory'))
+			->setClass(IPaginatorFactory::class)
+			->setFactory(PaginatorFactory::class);
+
+		$builder->addDefinition($this->prefix('translation'))
+			->setClass(ITranslator::class)
+			->setFactory(Translator::class, [$config['lang']]);
 
 		$builder->addDefinition($this->prefix('invoice'))
-			->setClass('WebChemistry\Invoice\Invoice', [$this->prefix('@company'), $this->prefix('@template')])
-			->addSetup('?->getTranslator()->setLang(?)', ['@self', $config['lang']]);
+			->setClass(Invoice::class, [
+				$this->prefix('@company'), $this->prefix('@template'), $this->prefix('@translator'),
+				$this->prefix('@paginatorFactory'),
+			]);
 	}
 
 }

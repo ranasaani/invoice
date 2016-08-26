@@ -4,32 +4,32 @@ namespace WebChemistry\Invoice\Components;
 
 use WebChemistry\Invoice\Data\Item;
 
-class Paginator {
+class Paginator implements IPaginator {
 
-	/** @var int */
-	public static $maxItems = 9;
+	const ITEMS_PER_PAGE = 9;
 
 	/** @var Item[] */
 	private $items;
 
 	/** @var int */
-	protected $currentPage;
+	protected $currentPage = 0;
+
+	/** @var int */
+	protected $totalPages;
 
 	/**
-	 * @param array $items
-	 * @return self
+	 * @param Item[] $items
 	 */
-	public function setItems(array $items) {
+	public function __construct(array $items) {
 		$this->items = $items;
-
-		return $this;
+		$this->totalPages = (int) ceil(count($this->items) / self::ITEMS_PER_PAGE);
 	}
 
 	/**
 	 * @return int
 	 */
 	public function getTotalPages() {
-		return (int) ceil(count($this->items) / 9);
+		return $this->totalPages;
 	}
 
 	/**
@@ -38,14 +38,14 @@ class Paginator {
 	public function getItems() {
 		$page = $this->currentPage - 1;
 
-		return array_slice($this->items, $page * 9, $page * 9 + 9);
+		return array_slice($this->items, $page * self::ITEMS_PER_PAGE, $page * self::ITEMS_PER_PAGE + self::ITEMS_PER_PAGE);
 	}
 
 	/**
 	 * @return bool
 	 */
 	public function isLastPage() {
-		return $this->currentPage === $this->getTotalPages();
+		return $this->currentPage >= $this->getTotalPages();
 	}
 
 	/**
@@ -55,14 +55,13 @@ class Paginator {
 		return $this->currentPage;
 	}
 
-	/**
-	 * @param int $currentPage
-	 * @return Paginator
-	 */
-	public function setCurrentPage($currentPage) {
-		$this->currentPage = (int) $currentPage;
+	public function nextPage() {
+		if ($this->isLastPage()) {
+			return FALSE;
+		}
+		$this->currentPage++;
 
-		return $this;
+		return TRUE;
 	}
 
 }

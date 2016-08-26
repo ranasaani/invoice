@@ -2,8 +2,7 @@
 
 namespace WebChemistry\Invoice\Data;
 
-use WebChemistry\Invoice\Components\Paginator;
-use WebChemistry\Invoice\Exception;
+use WebChemistry\Invoice\InvoiceException;
 
 class Template {
 
@@ -30,15 +29,17 @@ class Template {
 
 	/** @var array */
 	protected $colorEven = [241, 240, 240];
-	
-	/** @var Paginator */
-	protected $paginator;
+
+	/** @var string */
+	protected $footer;
+
+	/** @var string */
+	protected $logo;
 
 	public function __construct() {
 		$this->setFont(__DIR__ . '/../../assets/OpenSans-Regular.ttf');
 		$this->setFontBold(__DIR__ . '/../../assets/OpenSans-Semibold.ttf');
 		$this->setIconFont(__DIR__ . '/../../assets/pe.ttf');
-		$this->paginator = new Paginator();
 	}
 
 	/**
@@ -50,12 +51,12 @@ class Template {
 
 	/**
 	 * @param string $font
-	 * @throws Exception
+	 * @throws InvoiceException
 	 * @return self
 	 */
 	public function setFont($font) {
 		if (!file_exists($font) || !is_file($font)) {
-			throw new Exception("File '$font' not exists.");
+			throw new InvoiceException("File '$font' not exists.");
 		}
 		$this->font = $font;
 
@@ -71,12 +72,12 @@ class Template {
 
 	/**
 	 * @param string $fontBold
-	 * @throws Exception
+	 * @throws InvoiceException
 	 * @return self
 	 */
 	public function setFontBold($fontBold) {
 		if (!file_exists($fontBold) || !is_file($fontBold)) {
-			throw new Exception("File '$fontBold' not exists.");
+			throw new InvoiceException("File '$fontBold' not exists.");
 		}
 		$this->fontBold = $fontBold;
 
@@ -92,12 +93,12 @@ class Template {
 
 	/**
 	 * @param string $iconFont
-	 * @throws Exception
+	 * @throws InvoiceException
 	 * @return self
 	 */
 	public function setIconFont($iconFont) {
 		if (!file_exists($iconFont) || !is_file($iconFont)) {
-			throw new Exception("File '$iconFont' not exists.");
+			throw new InvoiceException("File '$iconFont' not exists.");
 		}
 		$this->iconFont = $iconFont;
 
@@ -118,7 +119,7 @@ class Template {
 	 */
 	public function setBaseColor(array $baseColor) {
 		if (count($baseColor) !== 3) {
-			throw new Exception('Color must have 3 items.');
+			throw new InvoiceException('Color must have 3 items.');
 		}
 		$this->baseColor = $baseColor;
 
@@ -134,12 +135,12 @@ class Template {
 
 	/**
 	 * @param array $primaryColor
-	 * @throws Exception
+	 * @throws InvoiceException
 	 * @return self
 	 */
 	public function setPrimaryColor($primaryColor) {
 		if (count($primaryColor) !== 3) {
-			throw new Exception('Color must have 3 items.');
+			throw new InvoiceException('Color must have 3 items.');
 		}
 		$this->primaryColor = $primaryColor;
 
@@ -155,12 +156,12 @@ class Template {
 
 	/**
 	 * @param array $fontColor
-	 * @throws Exception
+	 * @throws InvoiceException
 	 * @return self
 	 */
 	public function setFontColor($fontColor) {
 		if (count($fontColor) !== 3) {
-			throw new Exception('Color must have 3 items.');
+			throw new InvoiceException('Color must have 3 items.');
 		}
 		$this->fontColor = $fontColor;
 
@@ -176,12 +177,12 @@ class Template {
 
 	/**
 	 * @param array $colorOdd
-	 * @throws Exception
+	 * @throws InvoiceException
 	 * @return self
 	 */
 	public function setColorOdd($colorOdd) {
 		if (count($colorOdd) !== 3) {
-			throw new Exception('Color must have 3 items.');
+			throw new InvoiceException('Color must have 3 items.');
 		}
 		$this->colorOdd = $colorOdd;
 
@@ -197,12 +198,12 @@ class Template {
 
 	/**
 	 * @param array $colorEven
-	 * @throws Exception
+	 * @throws InvoiceException
 	 * @return self
 	 */
 	public function setColorEven($colorEven) {
 		if (count($colorEven) !== 3) {
-			throw new Exception('Color must have 3 items.');
+			throw new InvoiceException('Color must have 3 items.');
 		}
 		$this->colorEven = $colorEven;
 
@@ -210,20 +211,31 @@ class Template {
 	}
 
 	/**
-	 * @return Paginator
+	 * @param string $footer
 	 */
-	public function getPaginator() {
-		return $this->paginator;
+	public function setFooter($footer) {
+		$this->footer = $footer;
 	}
 
 	/**
-	 * @param Paginator $paginator
-	 * @return self
+	 * @return string
 	 */
-	public function setPaginator(Paginator $paginator) {
-		$this->paginator = $paginator;
+	public function getFooter() {
+		return $this->footer;
+	}
 
-		return $this;
+	/**
+	 * @param string $logo
+	 */
+	public function setLogo($logo) {
+		$this->logo = $logo;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getLogo() {
+		return $this->logo;
 	}
 
 }

@@ -2,12 +2,13 @@
 
 namespace WebChemistry\Invoice;
 
-use Nette\Localization\ITranslator;
-
 class Translator implements ITranslator {
 
+	const ENGLISH = 'en',
+		  CZECH = 'cs';
+
 	/** @var array */
-	private $translations = [
+	private static $translations = [
 		'cs' => [
 			'subscriber' => 'Odběratel',
 			'vat' => 'IČ',
@@ -63,25 +64,25 @@ class Translator implements ITranslator {
 	];
 
 	/** @var string */
-	private $lang = 'en';
-
-	/**
-	 * @param string $message
-	 * @param null $count
-	 * @return string
-	 */
-	public function translate($message, $count = NULL) {
-		return isset($this->translations[$this->lang][$message]) ? $this->translations[$this->lang][$message] : $message;
-	}
+	private $lang;
 
 	/**
 	 * @param string $lang
-	 * @return self
+	 * @throws InvoiceException
 	 */
-	public function setLang($lang) {
+	public function __construct($lang = self::ENGLISH) {
 		$this->lang = $lang;
+		if (!isset(self::$translations[$this->lang])) {
+			throw new InvoiceException("Language $lang not exists.");
+		}
+	}
 
-		return $this;
+	/**
+	 * @param string $message
+	 * @return string
+	 */
+	public function translate($message) {
+		return self::$translations[$this->lang][$message];
 	}
 
 }

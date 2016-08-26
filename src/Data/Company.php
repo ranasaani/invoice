@@ -2,66 +2,32 @@
 
 namespace WebChemistry\Invoice\Data;
 
-class Company extends AbstractData {
-
-	/** @var string */
-	protected $logo;
-
-	/** @var string */
-	protected $footer;
+class Company extends Subject {
 
 	/** @var bool */
-	protected $isTax = FALSE;
+	protected $hasTax;
 
 	/**
-	 * @return boolean
+	 * @param string $name
+	 * @param string $town
+	 * @param string $address
+	 * @param string $zip
+	 * @param string $country
+	 * @param string|null $tin
+	 * @param string|null $vaTin
+	 * @param bool $hasTax
 	 */
-	public function isTax() {
-		return $this->isTax;
+	public function __construct($name, $town, $address, $zip, $country, $tin = NULL, $vaTin = NULL,
+								$hasTax = FALSE) {
+		parent::__construct($name, $town, $address, $zip, $country, $tin, $vaTin);
+		$this->hasTax = (bool) $hasTax;
 	}
 
 	/**
-	 * @param boolean $isTax
-	 * @return self
+	 * @return bool
 	 */
-	public function setIsTax($isTax) {
-		$this->isTax = (bool) $isTax;
-
-		return $this;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getLogo() {
-		return $this->logo;
-	}
-
-	/**
-	 * @param string $logo
-	 * @return self
-	 */
-	public function setLogo($logo) {
-		$this->logo = (string) $logo;
-
-		return $this;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getFooter() {
-		return $this->footer;
-	}
-
-	/**
-	 * @param string $footer
-	 * @return self
-	 */
-	public function setFooter($footer) {
-		$this->footer = (string) $footer;
-
-		return $this;
+	public function hasTax() {
+		return $this->hasTax;
 	}
 
 }
