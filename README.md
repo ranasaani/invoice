@@ -8,40 +8,45 @@ composer require webchemistry/invoice
 
 ## Usage
 
-### Company data
+### Company
 
 ```php
-$company = new Company('John Doe', 'Los Angeles', 'Cavetown', '720 55', 'USA');
-
-$company->setFooter('footer');
-$company->setTin('1111');
-$company->setVaTin('CZ1111');
-$company->setLogo(__DIR__ . '/logo.png'); // Recommended height is 106px
-$company->setIsTax(TRUE);
+$factory = new WebChemistry\Invoice\InvoiceFactory();
+$company = $factory->createCompany('John Doe', 'Los Angeles', 'Cavetown', '720 55', 'USA', '0123456789', 'CZ0123456789');
 ```
 
-### Customer data
+### Customer
 
 ```php
-$customer = new Customer('John Doe', 'Los Angeles', 'Cavetown', '720 55', 'USA');
-$customer->setTin('08304431');
-$customer->setVaTin('CZ08304431');
+$factory = new WebChemistry\Invoice\InvoiceFactory();
+$customer = $factory->createCustomer('John Doe', 'Los Angeles', 'Cavetown', '720 55', 'USA');
 ```
 
-### Payment data
+### Account
 
 ```php
-$payment->setAccountNumber('1111');
-$payment = new Payment('2353462013/0800', 'Kč', '20150004');
-$payment->setIBan('CZ4808000000002353462013');
-$payment->setSwift('GIGACZPX');
-$payment->setDueDate(new \DateTime('+ 7 days'));
+$factory = new WebChemistry\Invoice\InvoiceFactory();
+$account = $factory->createAccount('1111', 'CZ4808000000002353462015', 'GIGACZPX');
+```
+
+### Payment info
+
+```php
+$factory = new WebChemistry\Invoice\InvoiceFactory();
+$payment = $factory->createPaymentInformation('Kč', '0123456789', '1234', 0.21);
+```
+
+### Order
+
+```php
+$factory = new WebChemistry\Invoice\InvoiceFactory();
+$order = $factory->createOrder('20160001', new \DateTime('+ 14 days'), $account, $payment);
 ```
 
 Adding items
 
 ```php
-$payment->addItem(new Item('Logitech G700s Rechargeable Gaming Mouse', 4, 1790));
+$order->addItem('Logitech G700s Rechargeable Gaming Mouse', 4, 1790);
 ```
 
 ### Customizing template
@@ -57,7 +62,7 @@ $template = new WebChemistry\Invoice\Data\Template();
 ```php
 $invoice = new \WebChemistry\Invoice\Invoice($company);
 
-$images = $invoice->create($customer, $payment);
+$images = $invoice->create($customer, $order);
 foreach ($images as $page => $invoice) {
 	$invoice->save(__DIR__ . "/invoice-$page.jpg");
 }
@@ -67,40 +72,6 @@ foreach ($images as $page => $invoice) {
 header('Content-Type: image/jpeg');
 echo $images[0]->encode();
 ```
-
-## Memory optimization
-
-```php
-$invoice->setSave(function (Intervention\Image\Image $image, $page) {
-	$invoice->save(__DIR__ . "/invoice-$page.jpg");
-});
-```
-
-## Translations
-At first visit [core](https://github.com/WebChemistry/Invoice/blob/master/src/Translator.php) component.
-
-Supported languages: English (en), Czech (cs)
-
-Change language:
-```php
-$invoce->getTranslator()->setLang('en');
-```
-
-Custom translator:
-```php
-
-class MyTranslator implements Nette\Localization\ITranslator {
-
-	public function translate($message, $count = NULL) { // $count is unnecessary
-		// ...
-	}
-
-}
-
-$invoice->setTranslator(new MyTranslator());
-```
-
-or you can send pull-request with your translation to core component.
 
 ## Generating preview
 
@@ -126,8 +97,6 @@ invoice:
 		## Optional
 		tin:
 		vaTin:
-		logo:
-		footer:
 		isTax:
 ```
 
