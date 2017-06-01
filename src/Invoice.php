@@ -36,45 +36,26 @@ class Invoice {
 	/** @var Translator */
 	private $translator;
 
-	/** @var callable */
-	private $formatNumberCallback;
-
 	/** @var IPaginatorFactory */
 	private $paginatorFactory;
+
+	/** @var IFormatter */
+	private $formatter;
 
 	/**
 	 * @param Company $company
 	 * @param Template $template
 	 * @param ITranslator $translator
 	 * @param IPaginatorFactory $paginatorFactory
+	 * @param IFormatter|null $formatter
 	 */
 	public function __construct(Company $company, Template $template = NULL, ITranslator $translator = NULL,
-								IPaginatorFactory $paginatorFactory = NULL) {
+								IPaginatorFactory $paginatorFactory = NULL, IFormatter $formatter = NULL) {
 		$this->company = $company;
 		$this->template = $template ? : new Template();
 		$this->translator = $translator ? : new Translator();
 		$this->paginatorFactory = $paginatorFactory ? : new PaginatorFactory();
-	}
-
-	/**
-	 * @param callable $callback
-	 * @return self
-	 */
-	public function setFormatNumberCallback(callable $callback) {
-		$this->formatNumberCallback = $callback;
-
-		return $this;
-	}
-
-	/**
-	 * @param float $float
-	 * @param int $decimals
-	 * @return string
-	 */
-	private function formatNumber($float, $decimals = 2) {
-		return $this->formatNumberCallback ?
-			call_user_func($this->formatNumberCallback, $float, $decimals) :
-			number_format($float, $decimals);
+		$this->formatter = $formatter ? : new Formatter();
 	}
 
 	/**
@@ -97,7 +78,7 @@ class Invoice {
 		$customer = $factory->createCustomer('John Doe', 'Los Angeles', 'Cavetown', '720 55', 'USA', '08304431', 'CZ08304431');
 
 		$account = $factory->createAccount('2353462013/0800', 'CZ4808000000002353462013', 'GIGACZPX');
-		$paymentInfo = $factory->createPaymentInformation('Kč', '0123456789', '1234', $tax);
+		$paymentInfo = $factory->createPaymentInformation('$', '0123456789', '1234', $tax);
 
 		$order = $factory->createOrder(date('Y') . '0001', new \DateTime('+ 7 days'), $account, $paymentInfo);
 		$order->addItem('Logitech G700s Rechargeable Gaming Mouse', 4, 1790);
@@ -123,7 +104,7 @@ class Invoice {
 		$paginator = $this->paginatorFactory->createPaginator($order->getItems());
 		$pages = [];
 
-		while ($paginator->nextPage()) {
+		while ($paginator->hasNextPage()) {
 			$this->initialize();
 
 			$this->rightHeader();
@@ -237,7 +218,7 @@ class Invoice {
 	}
 
 	protected function rightHeader() {
-		$this->image->text($this->translate('date') . ': ' . $this->order->getCreated()->format('d/m/Y'), 1700, 180, function (Font $font) {
+		$this->image->text($this->translate('date') . ': ' . $this->formatter->formatDate($this->order->getCreated()), 1700, 180, function (Font $font) {
 			$font->file($this->template->getFont());
 			$font->size(25);
 			$font->color($this->template->getColorOdd());
@@ -455,7 +436,7 @@ class Invoice {
 			$font->size(37);
 		});
 
-		$this->image->text($this->formatNumber($this->getTotalPrice(TRUE)) . ' ' . $this->order->getPayment()->getCurrency(), 2260, $plus + 65, function (Font $font) {
+		$this->image->text($this->formatter->formatMoney($this->getTotalPrice(TRUE), $this->order->getPayment()->getCurrency()), 2260, $plus + 65, function (Font $font) {
 			$font->align('center');
 			$font->color($this->template->getColorOdd());
 			$font->file($this->template->getFontBold());
@@ -499,7 +480,7 @@ class Invoice {
 			$font->size(37);
 		});
 
-		$this->image->text($this->formatNumber($this->getTotalPrice(FALSE)) . ' ' . $this->order->getPayment()->getCurrency(), 2260, $plus + 65, function (Font $font) {
+		$this->image->text($this->formatter->formatMoney($this->getTotalPrice(FALSE), $this->order->getPayment()->getCurrency()), 2260, $plus + 65, function (Font $font) {
 			$font->align('center');
 			$font->color($this->template->getFontColor());
 			$font->file($this->template->getFont());
@@ -562,7 +543,7 @@ class Invoice {
 			$font->color($this->template->getFontColor());
 		});
 
-		$this->image->text($this->formatNumber($item->getCount(), 0), 1255, 1350 + $plus, function (Font $font) {
+		$this->image->text($this->formatter->formatNumber($item->getCount(), 0), 1255, 1350 + $plus, function (Font $font) {
 			$font->size(27);
 			$font->file($this->template->getFont());
 			$font->valign('center');
@@ -570,7 +551,7 @@ class Invoice {
 			$font->color($this->template->getFontColor());
 		});
 
-		$this->image->text($this->formatNumber($item->getPrice()) . ' ' . $this->order->getPayment()->getCurrency(), 1650, 1350 + $plus, function (Font $font) {
+		$this->image->text($this->formatter->formatMoney($item->getPrice(), $this->order->getPayment()->getCurrency()), 1650, 1350 + $plus, function (Font $font) {
 			$font->size(27);
 			$font->file($this->template->getFont());
 			$font->valign('center');
@@ -578,7 +559,7 @@ class Invoice {
 			$font->color($this->template->getFontColor());
 		});
 
-		$this->image->text($this->formatNumber($item->getCount() * $item->getPrice()) . ' ' . $this->order->getPayment()->getCurrency(), 2322, 1350 + $plus, function (Font $font) {
+		$this->image->text($this->formatter->formatMoney($item->getCount() * $item->getPrice(), $this->order->getPayment()->getCurrency()), 2322, 1350 + $plus, function (Font $font) {
 			$font->size(27);
 			$font->file($this->template->getFontBold());
 			$font->valign('center');
@@ -650,7 +631,7 @@ class Invoice {
 				$font->size(27);
 				$font->file($this->template->getFont());
 			});
-			$this->image->text($this->order->getDueDate()->format('d/m/Y'), 1850, 705 + ($multiplier * 55), function (Font $font) {
+			$this->image->text($this->formatter->formatDate($this->order->getDueDate()), 1850, 705 + ($multiplier * 55), function (Font $font) {
 				$font->size(27);
 				$font->file($this->template->getFont());
 				$font->color($this->template->getFontColor());
@@ -763,7 +744,7 @@ class Invoice {
 			$font->size(27);
 			$font->file($this->template->getFont());
 		});
-		$this->image->text($this->formatNumber($this->getTotalPrice(TRUE)) . ' ' . $this->order->getPayment()->getCurrency(), 1850, 705 + ($multiplier * 55), function (Font $font) {
+		$this->image->text($this->formatter->formatMoney($this->getTotalPrice(TRUE), $this->order->getPayment()->getCurrency()), 1850, 705 + ($multiplier * 55), function (Font $font) {
 			$font->size(27);
 			$font->file($this->template->getFont());
 			$font->color($this->template->getFontColor());

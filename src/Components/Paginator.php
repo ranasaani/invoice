@@ -55,7 +55,10 @@ class Paginator implements IPaginator {
 		return $this->currentPage;
 	}
 
-	public function nextPage() {
+	/**
+	 * @return bool
+	 */
+	public function hasNextPage() {
 		if ($this->isLastPage()) {
 			return FALSE;
 		}

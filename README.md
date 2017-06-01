@@ -49,12 +49,37 @@ Adding items
 $order->addItem('Logitech G700s Rechargeable Gaming Mouse', 4, 1790);
 ```
 
-### Customizing template
+### Customizing
 
 ```php
 $template = new WebChemistry\Invoice\Data\Template();
 
 // ...
+```
+
+```php
+class CustomFormatter implements IFormatter {
+	
+	/**
+	 * @param float $float
+	 * @return string
+	 */
+	public function formatNumber($float) {}
+
+	/**
+	 * @param float $float
+	 * @param string $currency
+	 * @return string
+	 */
+	public function formatMoney($float, $currency) {}
+
+	/**
+	 * @param \DateTime $date
+	 * @return string
+	 */
+	public function formatDate(\DateTime $date) {}
+	
+}
 ```
 
 ## Generating invoices
@@ -118,3 +143,7 @@ First page:
 
 Second page:
 ![second page](http://i.imgbox.com/ebrwXldf.jpg)
+
+Customizing:
+![customizing](https://i.imgbox.com/LTLUYWtQ.jpg)
+

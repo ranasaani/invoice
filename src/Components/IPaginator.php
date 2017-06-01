@@ -29,6 +29,6 @@ interface IPaginator {
 	/**
 	 * @return bool
 	 */
-	public function nextPage();
+	public function hasNextPage();
 
 }
