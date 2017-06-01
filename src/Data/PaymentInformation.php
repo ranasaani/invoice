@@ -1,18 +1,18 @@
 <?php
 
-namespace WebChemistry\Invoice\Data;
+declare(strict_types=1);
 
-use WebChemistry\Invoice\InvoiceException;
+namespace WebChemistry\Invoice\Data;
 
 class PaymentInformation {
 
 	/** @var string */
 	private $currency;
 
-	/** @var string */
+	/** @var string|null */
 	private $variableSymbol;
 
-	/** @var string */
+	/** @var string|null */
 	private $constantSymbol;
 
 	/** @var float|null */
@@ -24,54 +24,38 @@ class PaymentInformation {
 	 * @param string|null $constantSymbol
 	 * @param float|null $tax
 	 */
-	public function __construct($currency, $variableSymbol = NULL, $constantSymbol = NULL, $tax = NULL) {
+	public function __construct(string $currency, ?string $variableSymbol = NULL, ?string $constantSymbol = NULL, ?float $tax = NULL) {
 		$this->currency = $currency;
 		$this->variableSymbol = $variableSymbol;
 		$this->constantSymbol = $constantSymbol;
 		$this->tax = $tax;
-
-		$this->validate();
 	}
-
-	/**
-	 * @throws InvoiceException
-	 */
-	private function validate() {
-		if (!$this->currency || !is_string($this->currency)) {
-			throw InvoiceException::wrongType('non-empty string', $this->currency);
-		}
-		if ($this->tax && !is_float($this->tax)) {
-			throw InvoiceException::wrongType('float', $this->tax);
-		}
-	}
-
-	/////////////////////////////////////////////////////////////////
 
 	/**
 	 * @return string
 	 */
-	public function getCurrency() {
+	public function getCurrency(): string {
 		return $this->currency;
 	}
 
 	/**
-	 * @return string
+	 * @return string|null
 	 */
-	public function getVariableSymbol() {
+	public function getVariableSymbol(): ?string {
 		return $this->variableSymbol;
 	}
 
 	/**
-	 * @return string
+	 * @return string|null
 	 */
-	public function getConstantSymbol() {
+	public function getConstantSymbol(): ?string {
 		return $this->constantSymbol;
 	}
 
 	/**
 	 * @return float|null
 	 */
-	public function getTax() {
+	public function getTax(): ?float {
 		return $this->tax;
 	}
 

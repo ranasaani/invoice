@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace WebChemistry\Invoice;
 
 use WebChemistry\Invoice\Data\Account;
@@ -17,7 +19,7 @@ class InvoiceFactory {
 	 * @param string|null $swift
 	 * @return Account
 	 */
-	public function createAccount($accountNumber, $iBan = NULL, $swift = NULL) {
+	public function createAccount($accountNumber, $iBan = NULL, $swift = NULL): Account {
 		return new Account($accountNumber, $iBan, $swift);
 	}
 
@@ -32,7 +34,7 @@ class InvoiceFactory {
 	 * @param bool $hasTax
 	 * @return Company
 	 */
-	public function createCompany($name, $town, $address, $zip, $country, $tin = NULL, $vaTin = NULL, $hasTax = FALSE) {
+	public function createCompany($name, $town, $address, $zip, $country, $tin = NULL, $vaTin = NULL, $hasTax = FALSE): Company {
 		return new Company($name, $town, $address, $zip, $country, $tin, $vaTin, $hasTax);
 	}
 
@@ -46,7 +48,7 @@ class InvoiceFactory {
 	 * @param string|null $vaTin
 	 * @return Customer
 	 */
-	public function createCustomer($name, $town, $address, $zip, $country, $tin = NULL, $vaTin = NULL) {
+	public function createCustomer($name, $town, $address, $zip, $country, $tin = NULL, $vaTin = NULL): Customer {
 		return new Customer($name, $town, $address, $zip, $country, $tin, $vaTin);
 	}
 
@@ -58,7 +60,7 @@ class InvoiceFactory {
 	 * @param \DateTime|NULL $created
 	 * @return Order
 	 */
-	public function createOrder($number, \DateTime $dueDate, Account $account, PaymentInformation $payment, \DateTime $created = NULL) {
+	public function createOrder($number, \DateTime $dueDate, Account $account, PaymentInformation $payment, \DateTime $created = NULL): Order {
 		return new Order($number, $dueDate, $account, $payment, $created);
 	}
 
@@ -69,14 +71,14 @@ class InvoiceFactory {
 	 * @param float|null $tax
 	 * @return PaymentInformation
 	 */
-	public function createPaymentInformation($currency, $variableSymbol = NULL, $constantSymbol = NULL, $tax = NULL) {
+	public function createPaymentInformation($currency, $variableSymbol = NULL, $constantSymbol = NULL, $tax = NULL): PaymentInformation {
 		return new PaymentInformation($currency, $variableSymbol, $constantSymbol, $tax);
 	}
 
 	/**
 	 * @return Template
 	 */
-	public function createTemplate() {
+	public function createTemplate(): Template {
 		return new Template();
 	}
 

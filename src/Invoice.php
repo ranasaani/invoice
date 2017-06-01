@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace WebChemistry\Invoice;
 
 use Intervention\Image\AbstractShape;
@@ -33,7 +35,7 @@ class Invoice {
 	/** @var Image */
 	private $image;
 	
-	/** @var Translator */
+	/** @var ITranslator */
 	private $translator;
 
 	/** @var IPaginatorFactory */
@@ -62,7 +64,7 @@ class Invoice {
 	 * @param string $message
 	 * @return string
 	 */
-	protected function translate($message) {
+	protected function translate(string $message): string {
 		return $this->translator->translate($message);
 	}
 
@@ -71,7 +73,7 @@ class Invoice {
 	/**
 	 * @return string Encoded invoice
 	 */
-	public function generatePreview() {
+	public function generatePreview(): string {
 		$factory = new InvoiceFactory();
 
 		$tax = $this->company->hasTax() ? 0.21 : NULL;
@@ -89,7 +91,7 @@ class Invoice {
 
 		$images = $this->create($customer, $order);
 
-		return $images[0]->encode();
+		return (string) $images[0]->encode();
 	}
 
 	/**
@@ -98,7 +100,7 @@ class Invoice {
 	 * @throws InvoiceException
 	 * @return Image[]
 	 */
-	public function create(Customer $customer, Order $order) {
+	public function create(Customer $customer, Order $order): array {
 		$this->customer = $customer;
 		$this->order = $order;
 		$paginator = $this->paginatorFactory->createPaginator($order->getItems());
@@ -133,7 +135,6 @@ class Invoice {
 
 			$pages[] = $this->image;
 		}
-		$this->image = NULL;
 
 		return $pages;
 	}
@@ -543,7 +544,7 @@ class Invoice {
 			$font->color($this->template->getFontColor());
 		});
 
-		$this->image->text($this->formatter->formatNumber($item->getCount(), 0), 1255, 1350 + $plus, function (Font $font) {
+		$this->image->text($this->formatter->formatNumber($item->getCount()), 1255, 1350 + $plus, function (Font $font) {
 			$font->size(27);
 			$font->file($this->template->getFont());
 			$font->valign('center');

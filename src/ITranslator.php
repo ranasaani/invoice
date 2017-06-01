@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace WebChemistry\Invoice;
 
 interface ITranslator {
@@ -8,6 +10,6 @@ interface ITranslator {
 	 * @param string $message
 	 * @return string
 	 */
-	public function translate($message);
+	public function translate(string $message): string;
 
 }

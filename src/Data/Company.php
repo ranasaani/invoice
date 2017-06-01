@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace WebChemistry\Invoice\Data;
 
 class Company extends Subject {
@@ -17,16 +19,16 @@ class Company extends Subject {
 	 * @param string|null $vaTin
 	 * @param bool $hasTax
 	 */
-	public function __construct($name, $town, $address, $zip, $country, $tin = NULL, $vaTin = NULL,
-								$hasTax = FALSE) {
+	public function __construct(string $name, string $town, string $address, string $zip, string $country, ?string $tin = NULL, ?string $vaTin = NULL,
+								bool $hasTax = FALSE) {
 		parent::__construct($name, $town, $address, $zip, $country, $tin, $vaTin);
-		$this->hasTax = (bool) $hasTax;
+		$this->hasTax = $hasTax;
 	}
 
 	/**
 	 * @return bool
 	 */
-	public function hasTax() {
+	public function hasTax(): bool {
 		return $this->hasTax;
 	}
 

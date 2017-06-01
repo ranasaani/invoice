@@ -1,8 +1,8 @@
 <?php
 
-namespace WebChemistry\Invoice\Data;
+declare(strict_types=1);
 
-use WebChemistry\Invoice\InvoiceException;
+namespace WebChemistry\Invoice\Data;
 
 class Account {
 
@@ -20,29 +20,10 @@ class Account {
 	 * @param string|null $iBan
 	 * @param string|null $swift
 	 */
-	public function __construct($accountNumber, $iBan = NULL, $swift = NULL) {
+	public function __construct(string $accountNumber, ?string $iBan = NULL, ?string $swift = NULL) {
 		$this->accountNumber = $accountNumber;
 		$this->iBan = $iBan;
 		$this->swift = $swift;
-
-		$this->validate();
-	}
-
-	/**
-	 * Validates properties
-	 *
-	 * @throws InvoiceException
-	 */
-	private function validate() {
-		if (!$this->accountNumber || !is_string($this->accountNumber)) {
-			throw InvoiceException::wrongType('non-empty string', $this->accountNumber);
-		}
-		if ($this->iBan !== NULL && !$this->iBan || !is_string($this->iBan)) {
-			throw InvoiceException::wrongType('non-empty string or null', $this->iBan);
-		}
-		if ($this->swift !== NULL && !$this->swift || !is_string($this->swift)) {
-			throw InvoiceException::wrongType('non-empty string or null', $this->iBan);
-		}
 	}
 
 	/////////////////////////////////////////////////////////////////
@@ -50,21 +31,21 @@ class Account {
 	/**
 	 * @return string
 	 */
-	public function getAccountNumber() {
+	public function getAccountNumber(): string {
 		return $this->accountNumber;
 	}
 
 	/**
 	 * @return null|string
 	 */
-	public function getIBan() {
+	public function getIBan(): ?string {
 		return $this->iBan;
 	}
 
 	/**
 	 * @return null|string
 	 */
-	public function getSwift() {
+	public function getSwift(): ?string {
 		return $this->swift;
 	}
 

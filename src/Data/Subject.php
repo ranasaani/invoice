@@ -1,8 +1,8 @@
 <?php
 
-namespace WebChemistry\Invoice\Data;
+declare(strict_types=1);
 
-use WebChemistry\Invoice\InvoiceException;
+namespace WebChemistry\Invoice\Data;
 
 abstract class Subject {
 
@@ -21,10 +21,10 @@ abstract class Subject {
 	/** @var string */
 	protected $country;
 
-	/** @var string */
+	/** @var string|null */
 	protected $tin;
 
-	/** @var string */
+	/** @var string|null */
 	protected $vaTin;
 
 	/**
@@ -35,9 +35,8 @@ abstract class Subject {
 	 * @param string $country
 	 * @param string|null $tin
 	 * @param string|null $vaTin
-	 * @throws InvoiceException
 	 */
-	public function __construct($name, $town, $address, $zip, $country, $tin = NULL, $vaTin = NULL) {
+	public function __construct(string $name, string $town, string $address, string $zip, string $country, ?string $tin = NULL, ?string $vaTin = NULL) {
 		$this->name = $name;
 		$this->town = $town;
 		$this->address = $address;
@@ -45,71 +44,54 @@ abstract class Subject {
 		$this->country = $country;
 		$this->tin = $tin;
 		$this->vaTin = $vaTin;
-
-		$this->validate();
 	}
-
-	/**
-	 * Validates properties
-	 *
-	 * @throws InvoiceException
-	 */
-	private function validate() {
-		foreach (['name', 'town', 'address', 'zip', 'country'] as $val) {
-			if (!$this->$val || !is_string($this->$val)) {
-				throw InvoiceException::wrongType('non-empty string', $this->$val);
-			}
-		}
-	}
-
-	/////////////////////////////////////////////////////////////////
 
 	/**
 	 * @return string
 	 */
-	public function getName() {
+	public function getName(): string {
 		return $this->name;
 	}
 
 	/**
 	 * @return string
 	 */
-	public function getTown() {
+	public function getTown(): string {
 		return $this->town;
 	}
 
 	/**
 	 * @return string
 	 */
-	public function getAddress() {
+	public function getAddress(): string {
 		return $this->address;
 	}
 
 	/**
 	 * @return string
 	 */
-	public function getZip() {
+	public function getZip(): string {
 		return $this->zip;
 	}
 
 	/**
 	 * @return string
 	 */
-	public function getCountry() {
+	public function getCountry(): string {
 		return $this->country;
 	}
 
 	/**
-	 * @return string
+	 * @return string|null
 	 */
-	public function getTin() {
+	public function getTin(): ?string {
 		return $this->tin;
 	}
 
 	/**
-	 * @return string
+	 * @return string|null
 	 */
-	public function getVaTin() {
+	public function getVaTin(): ?string {
 		return $this->vaTin;
 	}
 

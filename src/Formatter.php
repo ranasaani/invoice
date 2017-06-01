@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace WebChemistry\Invoice;
 
 class Formatter implements IFormatter {
@@ -30,19 +32,19 @@ class Formatter implements IFormatter {
 	/** @var string */
 	private $lang;
 
-	public function __construct($lang = self::ENGLISH) {
+	public function __construct(string $lang = self::ENGLISH) {
 		$this->lang = $lang;
 	}
 
-	public function formatNumber($float) {
+	public function formatNumber($float): string {
 		return number_format($float, 2, self::$options[$this->lang]['number']['dec'], self::$options[$this->lang]['number']['sep']);
 	}
 
-	public function formatMoney($float, $currency) {
+	public function formatMoney($float, string $currency): string {
 		return strtr(self::$options[$this->lang]['money'], ['%money' => $this->formatNumber($float), '%currency' => $currency]);
 	}
 
-	public function formatDate(\DateTime $date) {
+	public function formatDate(\DateTime $date): string {
 		return $date->format(self::$options[$this->lang]['date']);
 	}
 

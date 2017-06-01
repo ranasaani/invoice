@@ -70,7 +70,7 @@ class Translator implements ITranslator {
 	 * @param string $lang
 	 * @throws InvoiceException
 	 */
-	public function __construct($lang = self::ENGLISH) {
+	public function __construct(string $lang = self::ENGLISH) {
 		$this->lang = $lang;
 		if (!isset(self::$translations[$this->lang])) {
 			throw new InvoiceException("Language $lang not exists.");
@@ -81,7 +81,7 @@ class Translator implements ITranslator {
 	 * @param string $message
 	 * @return string
 	 */
-	public function translate($message) {
+	public function translate(string $message): string {
 		return self::$translations[$this->lang][$message];
 	}
 

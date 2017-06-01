@@ -1,9 +1,19 @@
+[![Build Status](https://travis-ci.org/WebChemistry/invoice.svg?branch=master)](https://travis-ci.org/WebChemistry/invoice)
+
 # PHP Invoice
 
 ## Installation
 
+php 7.0
+
 ```
 composer require webchemistry/invoice
+```
+
+php 5.5
+
+```
+composer require webchemistry/invoice:^1.0
 ```
 
 ## Usage

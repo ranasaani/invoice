@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace WebChemistry\Invoice\Data;
 
 use WebChemistry\Invoice\InvoiceException;
@@ -30,10 +32,10 @@ class Template {
 	/** @var array */
 	protected $colorEven = [241, 240, 240];
 
-	/** @var string */
+	/** @var string|null */
 	protected $footer;
 
-	/** @var string */
+	/** @var string|null */
 	protected $logo;
 
 	public function __construct() {
@@ -45,7 +47,7 @@ class Template {
 	/**
 	 * @return string
 	 */
-	public function getFont() {
+	public function getFont(): string {
 		return $this->font;
 	}
 
@@ -54,7 +56,7 @@ class Template {
 	 * @throws InvoiceException
 	 * @return self
 	 */
-	public function setFont($font) {
+	public function setFont(string $font): self {
 		if (!file_exists($font) || !is_file($font)) {
 			throw new InvoiceException("File '$font' not exists.");
 		}
@@ -66,7 +68,7 @@ class Template {
 	/**
 	 * @return string
 	 */
-	public function getFontBold() {
+	public function getFontBold(): string {
 		return $this->fontBold;
 	}
 
@@ -75,7 +77,7 @@ class Template {
 	 * @throws InvoiceException
 	 * @return self
 	 */
-	public function setFontBold($fontBold) {
+	public function setFontBold(string $fontBold): self {
 		if (!file_exists($fontBold) || !is_file($fontBold)) {
 			throw new InvoiceException("File '$fontBold' not exists.");
 		}
@@ -87,7 +89,7 @@ class Template {
 	/**
 	 * @return string
 	 */
-	public function getIconFont() {
+	public function getIconFont(): string {
 		return $this->iconFont;
 	}
 
@@ -96,7 +98,7 @@ class Template {
 	 * @throws InvoiceException
 	 * @return self
 	 */
-	public function setIconFont($iconFont) {
+	public function setIconFont(string $iconFont): self {
 		if (!file_exists($iconFont) || !is_file($iconFont)) {
 			throw new InvoiceException("File '$iconFont' not exists.");
 		}
@@ -108,16 +110,16 @@ class Template {
 	/**
 	 * @return array
 	 */
-	public function getBaseColor() {
+	public function getBaseColor(): array {
 		return $this->baseColor;
 	}
 
 	/**
 	 * @param array $baseColor
-	 * @throws
+	 * @throws InvoiceException
 	 * @return self
 	 */
-	public function setBaseColor(array $baseColor) {
+	public function setBaseColor(array $baseColor): self {
 		if (count($baseColor) !== 3) {
 			throw new InvoiceException('Color must have 3 items.');
 		}
@@ -129,7 +131,7 @@ class Template {
 	/**
 	 * @return array
 	 */
-	public function getPrimaryColor() {
+	public function getPrimaryColor(): array {
 		return $this->primaryColor;
 	}
 
@@ -138,7 +140,7 @@ class Template {
 	 * @throws InvoiceException
 	 * @return self
 	 */
-	public function setPrimaryColor($primaryColor) {
+	public function setPrimaryColor(array $primaryColor): self {
 		if (count($primaryColor) !== 3) {
 			throw new InvoiceException('Color must have 3 items.');
 		}
@@ -150,7 +152,7 @@ class Template {
 	/**
 	 * @return array
 	 */
-	public function getFontColor() {
+	public function getFontColor(): array {
 		return $this->fontColor;
 	}
 
@@ -159,7 +161,7 @@ class Template {
 	 * @throws InvoiceException
 	 * @return self
 	 */
-	public function setFontColor($fontColor) {
+	public function setFontColor(array $fontColor): self {
 		if (count($fontColor) !== 3) {
 			throw new InvoiceException('Color must have 3 items.');
 		}
@@ -171,7 +173,7 @@ class Template {
 	/**
 	 * @return array
 	 */
-	public function getColorOdd() {
+	public function getColorOdd(): array {
 		return $this->colorOdd;
 	}
 
@@ -180,7 +182,7 @@ class Template {
 	 * @throws InvoiceException
 	 * @return self
 	 */
-	public function setColorOdd($colorOdd) {
+	public function setColorOdd(array $colorOdd): self {
 		if (count($colorOdd) !== 3) {
 			throw new InvoiceException('Color must have 3 items.');
 		}
@@ -192,7 +194,7 @@ class Template {
 	/**
 	 * @return array
 	 */
-	public function getColorEven() {
+	public function getColorEven(): array {
 		return $this->colorEven;
 	}
 
@@ -201,7 +203,7 @@ class Template {
 	 * @throws InvoiceException
 	 * @return self
 	 */
-	public function setColorEven($colorEven) {
+	public function setColorEven(array $colorEven): self {
 		if (count($colorEven) !== 3) {
 			throw new InvoiceException('Color must have 3 items.');
 		}
@@ -211,30 +213,30 @@ class Template {
 	}
 
 	/**
-	 * @param string $footer
+	 * @param string|null $footer
 	 */
-	public function setFooter($footer) {
+	public function setFooter(?string $footer = NULL) {
 		$this->footer = $footer;
 	}
 
 	/**
-	 * @return string
+	 * @return string|null
 	 */
-	public function getFooter() {
+	public function getFooter(): ?string {
 		return $this->footer;
 	}
 
 	/**
-	 * @param string $logo
+	 * @param string|null $logo
 	 */
-	public function setLogo($logo) {
+	public function setLogo(?string $logo = NULL) {
 		$this->logo = $logo;
 	}
 
 	/**
 	 * @return string
 	 */
-	public function getLogo() {
+	public function getLogo(): ?string {
 		return $this->logo;
 	}
 

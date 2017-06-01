@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace WebChemistry\Invoice\Data;
 
 use WebChemistry\Invoice\InvoiceException;
@@ -48,7 +50,7 @@ class Order {
 	 * @param int|float $count
 	 * @return Item
 	 */
-	public function addItem($name, $price, $count = 1) {
+	public function addItem(string $name, $price, $count = 1) {
 		return $this->items[] = new Item($name, $price, $count);
 	}
 
@@ -75,35 +77,35 @@ class Order {
 	/**
 	 * @return \DateTime
 	 */
-	public function getDueDate() {
+	public function getDueDate(): \DateTime {
 		return $this->dueDate;
 	}
 
 	/**
 	 * @return Account
 	 */
-	public function getAccount() {
+	public function getAccount(): Account {
 		return $this->account;
 	}
 
 	/**
 	 * @return PaymentInformation
 	 */
-	public function getPayment() {
+	public function getPayment(): PaymentInformation {
 		return $this->payment;
 	}
 
 	/**
 	 * @return \DateTime
 	 */
-	public function getCreated() {
+	public function getCreated(): \DateTime {
 		return $this->created;
 	}
 
 	/**
 	 * @return Item[]
 	 */
-	public function getItems() {
+	public function getItems(): array {
 		return $this->items;
 	}
 
