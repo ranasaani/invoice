@@ -4,7 +4,8 @@
   "description": "Library for easily and quickly creating invoices for customers.",
   "tags": ["webchemistry", "invoice"],
   "require": {
-    "intervention/image": "^2.3"
+    "intervention/image": "^2.3",
+    "nette/utils": "^2.3"
   },
   "require-dev": {
     "nette/di": "^2.3"
