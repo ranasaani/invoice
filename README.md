@@ -4,7 +4,7 @@
 
 ## Installation
 
-php 7.0
+php 7.1
 
 ```
 composer require webchemistry/invoice
