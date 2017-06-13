@@ -11,6 +11,7 @@ use WebChemistry\Invoice\Data\Company;
 use WebChemistry\Invoice\Data\Template;
 use WebChemistry\Invoice\IFormatter;
 use WebChemistry\Invoice\Invoice;
+use WebChemistry\Invoice\InvoiceFactory;
 use WebChemistry\Invoice\ITranslator;
 use WebChemistry\Invoice\Translator;
 
@@ -27,7 +28,8 @@ class InvoiceExtension extends CompilerExtension {
 			'tin' => NULL,
 			'vaTin' => NULL,
 		],
-		'lang' => 'en'
+		'lang' => 'en',
+		'invoiceFactory' => FALSE,
 	];
 
 	public function loadConfiguration() {
@@ -54,6 +56,11 @@ class InvoiceExtension extends CompilerExtension {
 
 		$builder->addDefinition($this->prefix('invoice'))
 			->setClass(Invoice::class);
+
+		if ($config['invoiceFactory']) {
+			$builder->addDefinition($this->prefix('invoiceFactory'))
+				->setClass(InvoiceFactory::class);
+		}
 	}
 
 }
