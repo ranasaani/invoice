@@ -33,7 +33,7 @@ class Order {
 	 * @param PaymentInformation $payment
 	 * @param \DateTime|NULL $created
 	 */
-	public function __construct($number, \DateTime $dueDate, Account $account, PaymentInformation $payment,
+	public function __construct($number, ?\DateTime $dueDate, ?Account $account, PaymentInformation $payment,
 								\DateTime $created = NULL) {
 		$this->number = $number;
 		$this->dueDate = $dueDate;
@@ -77,14 +77,14 @@ class Order {
 	/**
 	 * @return \DateTime
 	 */
-	public function getDueDate(): \DateTime {
+	public function getDueDate(): ?\DateTime {
 		return $this->dueDate;
 	}
 
 	/**
 	 * @return Account
 	 */
-	public function getAccount(): Account {
+	public function getAccount(): ?Account {
 		return $this->account;
 	}
 

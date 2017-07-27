@@ -621,7 +621,7 @@ class Invoice {
 	protected function paymentInformation() {
 		$multiplier = 0;
 
-		if ($this->order->getDueDate()) {
+		if ($this->order->getAccount() && $this->order->getDueDate()) {
 			$this->image->text('&#xe660;', 1445, 710 + ($multiplier * 55), function (Font $font) {
 				$font->color($this->template->getPrimaryColor());
 				$font->file($this->template->getIconFont());
@@ -640,7 +640,7 @@ class Invoice {
 			$multiplier++;
 		}
 
-		if ($this->order->getAccount()->getAccountNumber()) {
+		if ($this->order->getAccount() && $this->order->getAccount()->getAccountNumber()) {
 			$this->image->text('&#xe645;', 1445, 710 + ($multiplier * 55), function (Font $font) {
 				$font->color($this->template->getPrimaryColor());
 				$font->file($this->template->getIconFont());
@@ -659,7 +659,7 @@ class Invoice {
 			$multiplier++;
 		}
 
-		if ($this->order->getAccount()->getIBan()) {
+		if ($this->order->getAccount() && $this->order->getAccount()->getIBan()) {
 			$this->image->text('&#xe645;', 1445, 710 + ($multiplier * 55), function (Font $font) {
 				$font->color($this->template->getPrimaryColor());
 				$font->file($this->template->getIconFont());
@@ -678,7 +678,7 @@ class Invoice {
 			$multiplier++;
 		}
 
-		if ($this->order->getAccount()->getSwift()) {
+		if ($this->order->getAccount() && $this->order->getAccount()->getSwift()) {
 			$this->image->text('&#xe645;', 1445, 710 + ($multiplier * 55), function (Font $font) {
 				$font->color($this->template->getPrimaryColor());
 				$font->file($this->template->getIconFont());

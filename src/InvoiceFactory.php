@@ -60,7 +60,7 @@ class InvoiceFactory {
 	 * @param \DateTime|NULL $created
 	 * @return Order
 	 */
-	public function createOrder($number, \DateTime $dueDate, Account $account, PaymentInformation $payment, \DateTime $created = NULL): Order {
+	public function createOrder($number, ?\DateTime $dueDate, ?Account $account, PaymentInformation $payment, \DateTime $created = NULL): Order {
 		return new Order($number, $dueDate, $account, $payment, $created);
 	}
 

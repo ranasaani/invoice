@@ -23,7 +23,7 @@ class Item {
 	 * @param int|float $price
 	 * @throws InvoiceException
 	 */
-	public function __construct(string $name, $count, $price) {
+	public function __construct(string $name, $price, $count) {
 		$this->name = $name;
 		$this->count = $count;
 		$this->price = $price;
