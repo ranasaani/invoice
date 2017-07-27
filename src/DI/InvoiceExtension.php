@@ -9,6 +9,7 @@ use WebChemistry\Invoice\Components\IPaginatorFactory;
 use WebChemistry\Invoice\Components\PaginatorFactory;
 use WebChemistry\Invoice\Data\Company;
 use WebChemistry\Invoice\Data\Template;
+use WebChemistry\Invoice\Formatter;
 use WebChemistry\Invoice\IFormatter;
 use WebChemistry\Invoice\Invoice;
 use WebChemistry\Invoice\InvoiceFactory;
@@ -52,7 +53,7 @@ class InvoiceExtension extends CompilerExtension {
 
 		$builder->addDefinition($this->prefix('formatter'))
 			->setClass(IFormatter::class)
-			->setFactory(Translator::class, [$config['lang']]);
+			->setFactory(Formatter::class, [$config['lang']]);
 
 		$builder->addDefinition($this->prefix('invoice'))
 			->setClass(Invoice::class);
