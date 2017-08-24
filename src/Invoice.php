@@ -453,7 +453,7 @@ class Invoice {
 	 */
 	private function getTotalPrice($useTax = FALSE) {
 		$total = 0;
-		if ($useTax && $this->company->hasTax() && $this->order->getPayment()->getTax() !== NULL) {
+		if ($useTax && $this->company->hasTax() && $this->order->getPayment()->getTax() !== NULL && !$this->order->hasPriceWithTax()) {
 			$tax = $this->order->getPayment()->getTax() + 1;
 		} else {
 			$tax = 1;

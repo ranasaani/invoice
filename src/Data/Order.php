@@ -26,22 +26,34 @@ class Order {
 	/** @var Item[] */
 	private $items = [];
 
+	/** @var bool */
+	private $hasPriceWithTax = FALSE;
+
 	/**
 	 * @param string|int $number
 	 * @param \DateTime $dueDate
 	 * @param Account $account
 	 * @param PaymentInformation $payment
 	 * @param \DateTime|NULL $created
+	 * @param bool $hasPriceWithTax
 	 */
 	public function __construct($number, ?\DateTime $dueDate, ?Account $account, PaymentInformation $payment,
-								\DateTime $created = NULL) {
+								\DateTime $created = NULL, bool $hasPriceWithTax = FALSE) {
 		$this->number = $number;
 		$this->dueDate = $dueDate;
 		$this->account = $account;
 		$this->payment = $payment;
 		$this->created = $created ? : new \DateTime();
+		$this->hasPriceWithTax = $hasPriceWithTax;
 
 		$this->validate();
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function hasPriceWithTax(): bool {
+		return $this->hasPriceWithTax;
 	}
 
 	/**
