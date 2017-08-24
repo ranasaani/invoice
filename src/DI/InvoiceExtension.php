@@ -28,6 +28,7 @@ class InvoiceExtension extends CompilerExtension {
 			'country' => NULL,
 			'tin' => NULL,
 			'vaTin' => NULL,
+			'hasTax' => FALSE,
 		],
 		'lang' => 'en',
 		'invoiceFactory' => FALSE,
