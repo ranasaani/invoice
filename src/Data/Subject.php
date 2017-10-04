@@ -9,16 +9,16 @@ abstract class Subject {
 	/** @var string */
 	protected $name;
 
-	/** @var string */
+	/** @var string|null */
 	protected $town;
 
-	/** @var string */
+	/** @var string|null */
 	protected $address;
 
-	/** @var string */
+	/** @var string|null */
 	protected $zip;
 
-	/** @var string */
+	/** @var string|null */
 	protected $country;
 
 	/** @var string|null */
@@ -29,14 +29,14 @@ abstract class Subject {
 
 	/**
 	 * @param string $name
-	 * @param string $town
-	 * @param string $address
-	 * @param string $zip
-	 * @param string $country
+	 * @param string|null $town
+	 * @param string|null $address
+	 * @param string|null $zip
+	 * @param string|null $country
 	 * @param string|null $tin
 	 * @param string|null $vaTin
 	 */
-	public function __construct(string $name, string $town, string $address, string $zip, string $country, ?string $tin = NULL, ?string $vaTin = NULL) {
+	public function __construct(string $name, ?string $town, ?string $address, ?string $zip, ?string $country, ?string $tin = NULL, ?string $vaTin = NULL) {
 		$this->name = $name;
 		$this->town = $town;
 		$this->address = $address;
@@ -54,30 +54,30 @@ abstract class Subject {
 	}
 
 	/**
-	 * @return string
+	 * @return string|null
 	 */
-	public function getTown(): string {
+	public function getTown(): ?string {
 		return $this->town;
 	}
 
 	/**
-	 * @return string
+	 * @return string|null
 	 */
-	public function getAddress(): string {
+	public function getAddress(): ?string {
 		return $this->address;
 	}
 
 	/**
-	 * @return string
+	 * @return string|null
 	 */
-	public function getZip(): string {
+	public function getZip(): ?string {
 		return $this->zip;
 	}
 
 	/**
-	 * @return string
+	 * @return string|null
 	 */
-	public function getCountry(): string {
+	public function getCountry(): ?string {
 		return $this->country;
 	}
 

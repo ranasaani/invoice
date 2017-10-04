@@ -25,16 +25,16 @@ class Invoice {
 
 	/** @var Template */
 	private $template;
-	
+
 	/** @var Order */
 	private $order;
-	
+
 	/** @var Customer */
 	private $customer;
-	
+
 	/** @var Image */
 	private $image;
-	
+
 	/** @var ITranslator */
 	private $translator;
 
@@ -354,11 +354,11 @@ class Invoice {
 
 		$this->image->text($this->company->hasTax() ? $this->translate('taxPay') : $this->translate('notTax'),
 			520, $y + ($multiplier * 50), function (Font $font) {
-			$font->file($this->template->getFont());
-			$font->color($this->template->getColorOdd());
-			$font->align('left');
-			$font->size(27);
-		});
+				$font->file($this->template->getFont());
+				$font->color($this->template->getColorOdd());
+				$font->align('left');
+				$font->size(27);
+			});
 
 		// Company name or full name
 		$this->image->text($this->company->getName(), 1775, 100, function (Font $font) {
@@ -392,7 +392,7 @@ class Invoice {
 			$shape->background($this->template->getFontColor());
 		});
 
-		$this->image->text($this->template->getFooter(), $this->image->getWidth() / 2, $this->image->getHeight() - 40, function (Font $font) {
+		$this->image->text($this->template->getFooter(), (int) ($this->image->getWidth() / 2), $this->image->getHeight() - 40, function (Font $font) {
 			$font->file($this->template->getFont());
 			$font->color($this->template->getColorOdd());
 			$font->align('center');
@@ -458,9 +458,15 @@ class Invoice {
 		} else {
 			$tax = 1;
 		}
-
-		foreach ($this->order->getItems() as $item) {
-			$total += $item->getPrice() * $item->getCount();
+		if ($useTax === FALSE && $this->order->hasPriceWithTax()) {
+			foreach ($this->order->getItems() as $item) {
+				$price = $item->getPrice() - ($item->getPrice() / ($this->order->getPayment()->getTax() + 1.0)) * $this->order->getPayment()->getTax();
+				$total += $price * $item->getCount();
+			}
+		} else {
+			foreach ($this->order->getItems() as $item) {
+				$total += $item->getPrice() * $item->getCount();
+			}
 		}
 
 		return $total * $tax;
@@ -537,6 +543,13 @@ class Invoice {
 			}
 		}
 
+		if ($this->order->hasPriceWithTax() && $this->order->getPayment()->getTax()) {
+			$price = $item->getPrice() - ($item->getPrice() / ($this->order->getPayment()->getTax() + 1.0)) * $this->order->getPayment()->getTax();
+		} else {
+			$price = $item->getPrice();
+		}
+
+
 		$this->image->text($text, 115, 1350 + $plus, function (Font $font) {
 			$font->size(27);
 			$font->file($this->template->getFont());
@@ -552,7 +565,7 @@ class Invoice {
 			$font->color($this->template->getFontColor());
 		});
 
-		$this->image->text($this->formatter->formatMoney($item->getPrice(), $this->order->getPayment()->getCurrency()), 1650, 1350 + $plus, function (Font $font) {
+		$this->image->text($this->formatter->formatMoney($price, $this->order->getPayment()->getCurrency()), 1650, 1350 + $plus, function (Font $font) {
 			$font->size(27);
 			$font->file($this->template->getFont());
 			$font->valign('center');
@@ -560,7 +573,7 @@ class Invoice {
 			$font->color($this->template->getFontColor());
 		});
 
-		$this->image->text($this->formatter->formatMoney($item->getCount() * $item->getPrice(), $this->order->getPayment()->getCurrency()), 2322, 1350 + $plus, function (Font $font) {
+		$this->image->text($this->formatter->formatMoney($item->getCount() * $price, $this->order->getPayment()->getCurrency()), 2322, 1350 + $plus, function (Font $font) {
 			$font->size(27);
 			$font->file($this->template->getFontBold());
 			$font->valign('center');

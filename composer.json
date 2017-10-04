@@ -13,7 +13,7 @@
 	},
 	"require-dev": {
 		"nette/di": "^2.3",
-		"phpstan/phpstan": "^0.7.0"
+		"phpstan/phpstan": "dev-master"
 	},
 	"autoload": {
 		"psr-4": {
