@@ -21,36 +21,31 @@ composer require webchemistry/invoice:^1.0
 ### Company
 
 ```php
-$factory = new WebChemistry\Invoice\InvoiceFactory();
-$company = $factory->createCompany('John Doe', 'Los Angeles', 'Cavetown', '720 55', 'USA', '0123456789', 'CZ0123456789');
+$company = WebChemistry\Invoice\InvoiceFactory::createCompany('John Doe', 'Los Angeles', 'Cavetown', '720 55', 'USA', '0123456789', 'CZ0123456789');
 ```
 
 ### Customer
 
 ```php
-$factory = new WebChemistry\Invoice\InvoiceFactory();
-$customer = $factory->createCustomer('John Doe', 'Los Angeles', 'Cavetown', '720 55', 'USA');
+$customer = WebChemistry\Invoice\InvoiceFactory::createCustomer('John Doe', 'Los Angeles', 'Cavetown', '720 55', 'USA');
 ```
 
 ### Account
 
 ```php
-$factory = new WebChemistry\Invoice\InvoiceFactory();
-$account = $factory->createAccount('1111', 'CZ4808000000002353462015', 'GIGACZPX');
+$account = WebChemistry\Invoice\InvoiceFactory::createAccount('1111', 'CZ4808000000002353462015', 'GIGACZPX');
 ```
 
 ### Payment info
 
 ```php
-$factory = new WebChemistry\Invoice\InvoiceFactory();
-$payment = $factory->createPaymentInformation('Kč', '0123456789', '1234', 0.21);
+$payment = WebChemistry\Invoice\InvoiceFactory::createPaymentInformation('Kč', '0123456789', '1234', 0.21);
 ```
 
 ### Order
 
 ```php
-$factory = new WebChemistry\Invoice\InvoiceFactory();
-$order = $factory->createOrder('20160001', new \DateTime('+ 14 days'), $account, $payment);
+$order = WebChemistry\Invoice\InvoiceFactory::createOrder('20160001', new \DateTime('+ 14 days'), $account, $payment);
 ```
 
 Adding items

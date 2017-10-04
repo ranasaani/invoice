@@ -19,7 +19,7 @@ class InvoiceFactory {
 	 * @param string|null $swift
 	 * @return Account
 	 */
-	public function createAccount($accountNumber, $iBan = NULL, $swift = NULL): Account {
+	public static function createAccount(string $accountNumber, ?string $iBan = NULL, ?string $swift = NULL): Account {
 		return new Account($accountNumber, $iBan, $swift);
 	}
 
@@ -34,7 +34,8 @@ class InvoiceFactory {
 	 * @param bool $hasTax
 	 * @return Company
 	 */
-	public function createCompany($name, $town, $address, $zip, $country, $tin = NULL, $vaTin = NULL, $hasTax = FALSE): Company {
+	public static function createCompany(string $name, string $town, string $address, string $zip, string $country, ?string $tin = NULL,
+										 ?string $vaTin = NULL, bool $hasTax = FALSE): Company {
 		return new Company($name, $town, $address, $zip, $country, $tin, $vaTin, $hasTax);
 	}
 
@@ -48,7 +49,8 @@ class InvoiceFactory {
 	 * @param string|null $vaTin
 	 * @return Customer
 	 */
-	public function createCustomer($name, $town, $address, $zip, $country, $tin = NULL, $vaTin = NULL): Customer {
+	public static function createCustomer(string $name, string $town, string $address, string $zip, string $country, ?string $tin = NULL,
+										  ?string $vaTin = NULL): Customer {
 		return new Customer($name, $town, $address, $zip, $country, $tin, $vaTin);
 	}
 
@@ -58,10 +60,12 @@ class InvoiceFactory {
 	 * @param Account $account
 	 * @param PaymentInformation $payment
 	 * @param \DateTime|NULL $created
+	 * @param bool $hasPriceWithTax
 	 * @return Order
 	 */
-	public function createOrder($number, ?\DateTime $dueDate, ?Account $account, PaymentInformation $payment, \DateTime $created = NULL): Order {
-		return new Order($number, $dueDate, $account, $payment, $created);
+	public static function createOrder($number, ?\DateTime $dueDate, ?Account $account, PaymentInformation $payment,
+									   \DateTime $created = NULL, bool $hasPriceWithTax = FALSE): Order {
+		return new Order($number, $dueDate, $account, $payment, $created, $hasPriceWithTax);
 	}
 
 	/**
@@ -71,14 +75,14 @@ class InvoiceFactory {
 	 * @param float|null $tax
 	 * @return PaymentInformation
 	 */
-	public function createPaymentInformation($currency, $variableSymbol = NULL, $constantSymbol = NULL, $tax = NULL): PaymentInformation {
+	public static function createPaymentInformation(string $currency, ?string $variableSymbol = NULL, ?string $constantSymbol = NULL, ?float $tax = NULL): PaymentInformation {
 		return new PaymentInformation($currency, $variableSymbol, $constantSymbol, $tax);
 	}
 
 	/**
 	 * @return Template
 	 */
-	public function createTemplate(): Template {
+	public static function createTemplate(): Template {
 		return new Template();
 	}
 
