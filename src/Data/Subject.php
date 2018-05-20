@@ -36,7 +36,7 @@ abstract class Subject {
 	 * @param string|null $tin
 	 * @param string|null $vaTin
 	 */
-	public function __construct(string $name, ?string $town, ?string $address, ?string $zip, ?string $country, ?string $tin = NULL, ?string $vaTin = NULL) {
+	public function __construct(string $name, ?string $town, ?string $address, ?string $zip, ?string $country, ?string $tin = null, ?string $vaTin = null) {
 		$this->name = $name;
 		$this->town = $town;
 		$this->address = $address;

@@ -14,6 +14,10 @@ use WebChemistry\Invoice\IFormatter;
 use WebChemistry\Invoice\Invoice;
 use WebChemistry\Invoice\InvoiceFactory;
 use WebChemistry\Invoice\ITranslator;
+use WebChemistry\Invoice\Renderers\IRenderer;
+use WebChemistry\Invoice\Renderers\PDFRenderer;
+use WebChemistry\Invoice\Templates\DefaultTemplate;
+use WebChemistry\Invoice\Templates\ITemplate;
 use WebChemistry\Invoice\Translator;
 
 class InvoiceExtension extends CompilerExtension {
@@ -21,17 +25,17 @@ class InvoiceExtension extends CompilerExtension {
 	/** @var array */
 	public $defaults = [
 		'company' => [
-			'name' => NULL,
-			'town' => NULL,
-			'address' => NULL,
-			'zip' => NULL,
-			'country' => NULL,
-			'tin' => NULL,
-			'vaTin' => NULL,
-			'hasTax' => FALSE,
+			'name' => null,
+			'town' => null,
+			'address' => null,
+			'zip' => null,
+			'country' => null,
+			'tin' => null,
+			'vaTin' => null,
+			'hasTax' => false,
 		],
 		'lang' => 'en',
-		'invoiceFactory' => FALSE,
+		'invoiceFactory' => false,
 	];
 
 	public function loadConfiguration() {
@@ -39,29 +43,30 @@ class InvoiceExtension extends CompilerExtension {
 		$config = $this->validateConfig($this->defaults);
 
 		$builder->addDefinition($this->prefix('company'))
-			->setClass(Company::class, array_values($config['company']));
+			->setFactory(Company::class, array_values($config['company']));
 
 		$builder->addDefinition($this->prefix('template'))
-			->setClass(Template::class);
+			->setFactory(DefaultTemplate::class)
+			->setType(ITemplate::class);
 
-		$builder->addDefinition($this->prefix('paginatorFactory'))
-			->setClass(IPaginatorFactory::class)
-			->setFactory(PaginatorFactory::class);
+		$builder->addDefinition($this->prefix('renderer'))
+			->setFactory(PDFRenderer::class)
+			->setType(IRenderer::class);
 
 		$builder->addDefinition($this->prefix('translation'))
-			->setClass(ITranslator::class)
+			->setType(ITranslator::class)
 			->setFactory(Translator::class, [$config['lang']]);
 
 		$builder->addDefinition($this->prefix('formatter'))
-			->setClass(IFormatter::class)
+			->setType(IFormatter::class)
 			->setFactory(Formatter::class, [$config['lang']]);
 
 		$builder->addDefinition($this->prefix('invoice'))
-			->setClass(Invoice::class);
+			->setFactory(Invoice::class);
 
 		if ($config['invoiceFactory']) {
 			$builder->addDefinition($this->prefix('invoiceFactory'))
-				->setClass(InvoiceFactory::class);
+				->setFactory(InvoiceFactory::class);
 		}
 	}
 

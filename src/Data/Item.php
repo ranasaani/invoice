@@ -27,22 +27,6 @@ class Item {
 		$this->name = $name;
 		$this->count = $count;
 		$this->price = $price;
-
-		$this->validate();
-	}
-
-	/**
-	 * Validates properties
-	 *
-	 * @throws InvoiceException
-	 */
-	private function validate() {
-		if (!is_numeric($this->count)) {
-			throw InvoiceException::wrongType('numeric', $this->count);
-		}
-		if (!is_numeric($this->price)) {
-			throw InvoiceException::wrongType('numeric', $this->price);
-		}
 	}
 
 	/////////////////////////////////////////////////////////////////

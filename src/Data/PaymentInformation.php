@@ -24,7 +24,7 @@ class PaymentInformation {
 	 * @param string|null $constantSymbol
 	 * @param float|null $tax
 	 */
-	public function __construct(string $currency, ?string $variableSymbol = NULL, ?string $constantSymbol = NULL, ?float $tax = NULL) {
+	public function __construct(string $currency, ?string $variableSymbol = null, ?string $constantSymbol = null, ?float $tax = null) {
 		$this->currency = $currency;
 		$this->variableSymbol = $variableSymbol;
 		$this->constantSymbol = $constantSymbol;

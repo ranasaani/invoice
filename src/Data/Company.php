@@ -19,8 +19,8 @@ class Company extends Subject {
 	 * @param string|null $vaTin
 	 * @param bool $hasTax
 	 */
-	public function __construct(string $name, string $town, string $address, string $zip, string $country, ?string $tin = NULL, ?string $vaTin = NULL,
-								bool $hasTax = FALSE) {
+	public function __construct(string $name, string $town, string $address, string $zip, string $country, ?string $tin = null, ?string $vaTin = null,
+								bool $hasTax = false) {
 		parent::__construct($name, $town, $address, $zip, $country, $tin, $vaTin);
 		$this->hasTax = $hasTax;
 	}

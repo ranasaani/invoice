@@ -10,12 +10,6 @@ php 7.1
 composer require webchemistry/invoice
 ```
 
-php 5.5
-
-```
-composer require webchemistry/invoice:^1.0
-```
-
 ## Usage
 
 ### Company
@@ -57,12 +51,6 @@ $order->addItem('Logitech G700s Rechargeable Gaming Mouse', 4, 1790);
 ### Customizing
 
 ```php
-$template = new WebChemistry\Invoice\Data\Template();
-
-// ...
-```
-
-```php
 class CustomFormatter implements IFormatter {
 	
 	/**
@@ -92,21 +80,14 @@ class CustomFormatter implements IFormatter {
 ```php
 $invoice = new \WebChemistry\Invoice\Invoice($company);
 
-$images = $invoice->create($customer, $order);
-foreach ($images as $page => $invoice) {
-	$invoice->save(__DIR__ . "/invoice-$page.jpg");
-}
-
-// Show first page
-
-header('Content-Type: image/jpeg');
-echo $images[0]->encode();
+header('Content-Type: application/pdf');
+echo $invoice->create($customer, $order);
 ```
 
 ## Generating preview
 
 ```php
-header('Content-Type: image/jpeg');
+header('Content-Type: application/pdf');
 echo $invoice->generatePreview();
 ```
 
@@ -148,7 +129,3 @@ First page:
 
 Second page:
 ![second page](http://i.imgbox.com/ebrwXldf.jpg)
-
-Customizing:
-![customizing](https://i.imgbox.com/LTLUYWtQ.jpg)
-

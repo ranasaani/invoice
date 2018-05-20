@@ -6,9 +6,7 @@ namespace WebChemistry\Invoice\Components;
 
 use WebChemistry\Invoice\Data\Item;
 
-class Paginator implements IPaginator {
-
-	const ITEMS_PER_PAGE = 9;
+class Paginator {
 
 	/** @var Item[] */
 	private $items;
@@ -19,12 +17,17 @@ class Paginator implements IPaginator {
 	/** @var int */
 	protected $totalPages;
 
+	/** @var int */
+	private $itemsPerPage;
+
 	/**
 	 * @param Item[] $items
+	 * @param int $itemsPerPage
 	 */
-	public function __construct(array $items) {
+	public function __construct(array $items, int $itemsPerPage) {
 		$this->items = $items;
-		$this->totalPages = (int) ceil(count($this->items) / self::ITEMS_PER_PAGE);
+		$this->totalPages = (int) ceil(count($this->items) / $itemsPerPage);
+		$this->itemsPerPage = $itemsPerPage;
 	}
 
 	/**
@@ -40,7 +43,11 @@ class Paginator implements IPaginator {
 	public function getItems(): array {
 		$page = $this->currentPage - 1;
 
-		return array_slice($this->items, $page * self::ITEMS_PER_PAGE, $page * self::ITEMS_PER_PAGE + self::ITEMS_PER_PAGE);
+		return array_slice($this->items, $page * $this->itemsPerPage, $page * $this->itemsPerPage + $this->itemsPerPage);
+	}
+
+	public function isFirstPage(): bool {
+		return $this->currentPage === 1;
 	}
 
 	/**
@@ -60,7 +67,7 @@ class Paginator implements IPaginator {
 	/**
 	 * @return bool
 	 */
-	public function hasNextPage(): bool {
+	public function nextPage(): bool {
 		if ($this->isLastPage()) {
 			return FALSE;
 		}

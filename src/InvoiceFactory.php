@@ -79,11 +79,4 @@ class InvoiceFactory {
 		return new PaymentInformation($currency, $variableSymbol, $constantSymbol, $tax);
 	}
 
-	/**
-	 * @return Template
-	 */
-	public static function createTemplate(): Template {
-		return new Template();
-	}
-
 }

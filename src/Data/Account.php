@@ -20,7 +20,7 @@ class Account {
 	 * @param string|null $iBan
 	 * @param string|null $swift
 	 */
-	public function __construct(string $accountNumber, ?string $iBan = NULL, ?string $swift = NULL) {
+	public function __construct(string $accountNumber, ?string $iBan = null, ?string $swift = null) {
 		$this->accountNumber = $accountNumber;
 		$this->iBan = $iBan;
 		$this->swift = $swift;

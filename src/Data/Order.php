@@ -121,4 +121,29 @@ class Order {
 		return $this->items;
 	}
 
+	/**
+	 * @param bool $useTax
+	 * @return float
+	 */
+	public function getTotalPrice(bool $useTax = false): float {
+		$total = 0;
+		if ($useTax && $this->getPayment()->getTax() !== NULL && !$this->hasPriceWithTax()) {
+			$tax = $this->getPayment()->getTax() + 1;
+		} else {
+			$tax = 1;
+		}
+		if ($useTax === FALSE && $this->hasPriceWithTax()) {
+			foreach ($this->getItems() as $item) {
+				$price = $item->getPrice() - ($item->getPrice() / ($this->getPayment()->getTax() + 1.0)) * $this->getPayment()->getTax();
+				$total += $price * $item->getCount();
+			}
+		} else {
+			foreach ($this->getItems() as $item) {
+				$total += $item->getPrice() * $item->getCount();
+			}
+		}
+
+		return $total * $tax;
+	}
+	
 }
