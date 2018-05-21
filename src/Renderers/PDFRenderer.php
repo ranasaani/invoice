@@ -26,10 +26,7 @@ class PDFRenderer implements IRenderer {
 	}
 
 	public function textWidth(string $text, ?callable $setCallback = null): float {
-		$settings = new Settings();
-		if ($setCallback !== null) {
-			$setCallback($settings);
-		}
+		$settings = $this->extractSettings($setCallback);
 		$this->setFont($settings);
 
 		return $this->pdf->GetStringWidth($text);
@@ -60,10 +57,7 @@ class PDFRenderer implements IRenderer {
 	}
 
 	public function rect(float $x, float $y, float $width, float $height, ?callable $setCallback = null): void {
-		$settings = new Settings();
-		if ($setCallback !== null) {
-			$setCallback($settings);
-		}
+		$settings = $this->extractSettings($setCallback);
 
 		$this->setDrawing($settings);
 
@@ -71,10 +65,7 @@ class PDFRenderer implements IRenderer {
 	}
 
 	public function polygon(array $points, ?callable $setCallback = null): void {
-		$settings = new Settings();
-		if ($setCallback !== null) {
-			$setCallback($settings);
-		}
+		$settings = $this->extractSettings($setCallback);
 
 		$this->setDrawing($settings);
 
@@ -86,19 +77,13 @@ class PDFRenderer implements IRenderer {
 	 */
 	public function cell(float $x, float $y, float $width, ?float $height, ?string $text, ?callable $setCallback = null): void {
 		$text = iconv('UTF-8', 'WINDOWS-1250//TRANSLIT', (string) $text);
-		$settings = new Settings();
-		if ($setCallback !== null) {
-			$setCallback($settings);
-		}
+
+
+		$settings = $this->extractSettings($setCallback);
+		$this->restoreSettings($settings, 'align');
 
 		$this->pdf->SetXY($x, $y);
 		$this->setFont($settings);
-
-		if ($settings->align === null) {
-			$settings->align = $this->cache['align'];
-		} else {
-			$this->cache['align'] = $settings->align;
-		}
 
 		if ($height) {
 			$this->pdf->MultiCell($width, $height, $text, $settings->border, $settings->align, $settings->fill);
@@ -107,26 +92,19 @@ class PDFRenderer implements IRenderer {
 		}
 	}
 
+	public function output(): string {
+		return $this->pdf->Output();
+	}
+
 	protected function setFont(Settings $settings): void {
 		if ($settings->fontFamily === null && $settings->fontSize === null && $settings->fontColor === null) {
 			return;
 		}
 
-		$family = $settings->fontFamily;
-		$size = $settings->fontSize;
+		$this->restoreSettings($settings, 'fontFamily');
+		$this->restoreSettings($settings, 'fontSize');
 
-		if ($family !== null) {
-			$this->cache['family'] = $family;
-		} else {
-			$family = $this->cache['family'];
-		}
-		if ($size !== null) {
-			$this->cache['size'] = $size;
-		} else {
-			$size = $this->cache['size'];
-		}
-
-		$this->pdf->SetFont($family, $settings->fontStyle, $size);
+		$this->pdf->SetFont($settings->fontFamily, $settings->fontStyle, $settings->fontSize);
 
 		if ($settings->fontColor) {
 			$color = $settings->fontColor;
@@ -147,8 +125,22 @@ class PDFRenderer implements IRenderer {
 		}
 	}
 
-	public function output(): string {
-		return $this->pdf->Output();
+	protected function extractSettings(?callable $callback = null): Settings {
+		$settings = new Settings();
+		if ($callback !== null) {
+			$callback($settings);
+		}
+
+		return $settings;
 	}
+
+	protected function restoreSettings(Settings $settings, string $name): void {
+		if ($settings->$name === null) {
+			$settings->$name = $this->cache[$name];
+		} else {
+			$this->cache[$name] = $settings->$name;
+		}
+	}
+
 
 }
