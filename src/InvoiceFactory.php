@@ -9,7 +9,6 @@ use WebChemistry\Invoice\Data\Company;
 use WebChemistry\Invoice\Data\Customer;
 use WebChemistry\Invoice\Data\Order;
 use WebChemistry\Invoice\Data\PaymentInformation;
-use WebChemistry\Invoice\Data\Template;
 
 class InvoiceFactory {
 
