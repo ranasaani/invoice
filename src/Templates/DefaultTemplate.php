@@ -284,7 +284,7 @@ class DefaultTemplate implements ITemplate {
 			$settings->setFillDrawColor($this->primary);
 		});
 
-		$y = 30;
+		$y = 36;
 		$renderer->cell(112, $y, 1, null, $this->company->getZip() . ' ' . $this->company->getTown(), function (Settings $settings) {
 			$settings->align = $settings::ALIGN_RIGHT;
 			$settings->fontSize = 6;
@@ -328,7 +328,7 @@ class DefaultTemplate implements ITemplate {
 			$settings->fontSize = 6;
 		});
 		$renderer->cell(525, 57, 1, null, $this->translator->translate('invoiceNumber') . ': ' . $this->order->getNumber());
-		$renderer->cell(537, 53, 1, null, Strings::upper($this->translator->translate('invoice')), function (Settings $settings) {
+		$renderer->cell(537, 52, 1, null, Strings::upper($this->translator->translate('invoice')), function (Settings $settings) {
 			$settings->align = $settings::ALIGN_LEFT;
 			$settings->fontSize = 18;
 			$settings->fontStyle = $settings::FONT_STYLE_BOLD;
