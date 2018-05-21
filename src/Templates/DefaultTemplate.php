@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace WebChemistry\Invoice\Templates;
 
+use Nette\SmartObject;
 use Nette\Utils\Strings;
 use WebChemistry\Invoice\Components\Paginator;
 use WebChemistry\Invoice\Data\Company;
@@ -17,6 +18,8 @@ use WebChemistry\Invoice\Renderers\Settings;
 use WebChemistry\Invoice\Translator;
 
 class DefaultTemplate implements ITemplate {
+
+	use SmartObject;
 
 	/** @var Color */
 	private $primary;

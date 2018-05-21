@@ -4,7 +4,11 @@ declare(strict_types=1);
 
 namespace WebChemistry\Invoice\Data;
 
+use Nette\SmartObject;
+
 abstract class Subject {
+
+	use SmartObject;
 
 	/** @var string */
 	protected $name;

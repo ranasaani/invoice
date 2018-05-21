@@ -4,7 +4,11 @@ declare(strict_types=1);
 
 namespace WebChemistry\Invoice\Renderers;
 
+use Nette\SmartObject;
+
 class Settings {
+
+	use SmartObject;
 
 	const DEFAULT_FONT_SIZE = null;
 

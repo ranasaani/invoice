@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace WebChemistry\Invoice;
 
+use Nette\SmartObject;
 use WebChemistry\Invoice\Data\Account;
 use WebChemistry\Invoice\Data\Company;
 use WebChemistry\Invoice\Data\Customer;
@@ -11,6 +12,8 @@ use WebChemistry\Invoice\Data\Order;
 use WebChemistry\Invoice\Data\PaymentInformation;
 
 class InvoiceFactory {
+
+	use SmartObject;
 
 	/**
 	 * @param string $accountNumber

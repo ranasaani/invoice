@@ -4,7 +4,11 @@ declare(strict_types=1);
 
 namespace WebChemistry\Invoice;
 
+use Nette\SmartObject;
+
 class Formatter implements IFormatter {
+
+	use SmartObject;
 
 	const ENGLISH = 'en',
 		CZECH = 'cs';

@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace WebChemistry\Invoice\Components;
 
+use Nette\SmartObject;
 use WebChemistry\Invoice\Data\Item;
 
 class Paginator {
+
+	use SmartObject;
 
 	/** @var Item[] */
 	private $items;

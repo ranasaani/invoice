@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace WebChemistry\Invoice;
 
+use Nette\SmartObject;
 use WebChemistry\Invoice\Data\Company;
 use WebChemistry\Invoice\Data\Customer;
 use WebChemistry\Invoice\Data\Order;
@@ -13,6 +14,8 @@ use WebChemistry\Invoice\Templates\DefaultTemplate;
 use WebChemistry\Invoice\Templates\ITemplate;
 
 class Invoice {
+
+	use SmartObject;
 
 	/** @var Company */
 	protected $company;

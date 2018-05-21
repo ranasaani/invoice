@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 namespace WebChemistry\Invoice\Data;
 
+use Nette\SmartObject;
 use WebChemistry\Invoice\InvoiceException;
 
 class Item {
+
+	use SmartObject;
 
 	/** @var string */
 	protected $name;

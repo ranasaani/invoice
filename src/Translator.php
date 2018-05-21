@@ -2,7 +2,11 @@
 
 namespace WebChemistry\Invoice;
 
+use Nette\SmartObject;
+
 class Translator implements ITranslator {
+
+	use SmartObject;
 
 	const ENGLISH = 'en',
 		  CZECH = 'cs';

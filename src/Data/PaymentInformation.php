@@ -4,7 +4,11 @@ declare(strict_types=1);
 
 namespace WebChemistry\Invoice\Data;
 
+use Nette\SmartObject;
+
 class PaymentInformation {
+
+	use SmartObject;
 
 	/** @var string */
 	private $currency;

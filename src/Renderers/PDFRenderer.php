@@ -4,7 +4,11 @@ declare(strict_types=1);
 
 namespace WebChemistry\Invoice\Renderers;
 
+use Nette\SmartObject;
+
 class PDFRenderer implements IRenderer {
+
+	use SmartObject;
 
 	/** @var PDF */
 	protected $pdf;
