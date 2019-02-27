@@ -1,10 +1,9 @@
-<?php
+<?php declare(strict_types = 1);
 
-declare(strict_types=1);
+namespace Contributte\Invoice;
 
-namespace WebChemistry\Invoice;
-
-interface ITranslator {
+interface ITranslator
+{
 
 	public function translate(string $message): string;
 

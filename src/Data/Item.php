@@ -1,13 +1,12 @@
-<?php
+<?php declare(strict_types = 1);
 
-declare(strict_types=1);
+namespace Contributte\Invoice\Data;
 
-namespace WebChemistry\Invoice\Data;
-
+use Contributte\Invoice\Calculators\ICalculator;
 use Nette\SmartObject;
-use WebChemistry\Invoice\Calculators\ICalculator;
 
-class Item {
+class Item
+{
 
 	use SmartObject;
 
@@ -27,12 +26,11 @@ class Item {
 	private $totalPrice;
 
 	/**
-	 * @param string $name
 	 * @param int|float $price
 	 * @param int|float $count
-	 * @param float|null $tax
 	 */
-	public function __construct(string $name, $price, $count, ?float $tax = null) {
+	public function __construct(string $name, $price, $count, ?float $tax = null)
+	{
 		$this->name = $name;
 		$this->count = $count;
 		$this->price = $price;
@@ -45,46 +43,44 @@ class Item {
 	 * @param float|int|string $totalPrice
 	 * @return static
 	 */
-	public function setTotalPrice($totalPrice) {
+	public function setTotalPrice($totalPrice)
+	{
 		$this->totalPrice = $totalPrice;
 
 		return $this;
 	}
 
-	/**
-	 * @return float|null
-	 */
-	public function getTax(): ?float {
+	public function getTax(): ?float
+	{
 		return $this->tax;
 	}
 
-	/**
-	 * @return string
-	 */
-	public function getName(): string {
+	public function getName(): string
+	{
 		return $this->name;
 	}
 
 	/**
 	 * @return int|float
 	 */
-	public function getCount() {
+	public function getCount()
+	{
 		return $this->count;
 	}
 
 	/**
 	 * @return int|float
 	 */
-	public function getPrice() {
+	public function getPrice()
+	{
 		return $this->price;
 	}
 
 	/**
-	 * @param ICalculator $calculator
-	 * @param bool $useTax
 	 * @return float|int|string
 	 */
-	public function getTotalPrice(ICalculator $calculator, bool $useTax = false) {
+	public function getTotalPrice(ICalculator $calculator, bool $useTax = false)
+	{
 		if ($this->totalPrice !== null) {
 			return $calculator->add($this->totalPrice, 0);
 		}

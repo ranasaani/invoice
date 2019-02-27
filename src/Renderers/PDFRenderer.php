@@ -1,19 +1,18 @@
-<?php
+<?php declare(strict_types = 1);
 
-declare(strict_types=1);
-
-namespace WebChemistry\Invoice\Renderers;
+namespace Contributte\Invoice\Renderers;
 
 use Nette\SmartObject;
 
-class PDFRenderer implements IRenderer {
+class PDFRenderer implements IRenderer
+{
 
 	use SmartObject;
 
 	/** @var PDF */
 	protected $pdf;
 
-	/** @var array */
+	/** @var mixed[] */
 	protected $cache = [
 		'family' => null,
 		'size' => 15,
@@ -21,30 +20,36 @@ class PDFRenderer implements IRenderer {
 		'align' => Settings::ALIGN_JUSTIFY,
 	];
 
-	public function x(): int {
+	public function x(): int
+	{
 		return (int) $this->pdf->GetX();
 	}
 
-	public function y(): int {
+	public function y(): int
+	{
 		return (int) $this->pdf->GetY();
 	}
 
-	public function textWidth(string $text, ?callable $setCallback = null): float {
+	public function textWidth(string $text, ?callable $setCallback = null): float
+	{
 		$settings = $this->extractSettings($setCallback);
 		$this->setFont($settings);
 
 		return $this->pdf->GetStringWidth($text);
 	}
 
-	public function width(): float {
+	public function width(): float
+	{
 		return $this->pdf->GetPageWidth();
 	}
 
-	public function height(): float {
+	public function height(): float
+	{
 		return $this->pdf->GetPageHeight();
 	}
 
-	public function createNew(): void {
+	public function createNew(): void
+	{
 		$this->pdf = new PDF('P', 'px', 'A4');
 		$this->pdf->SetFontPath(IRenderer::ASSETS_PATH);
 		$this->pdf->SetAutoPageBreak(false);
@@ -52,15 +57,18 @@ class PDFRenderer implements IRenderer {
 		$this->addPage();
 	}
 
-	public function addPage(): void {
+	public function addPage(): void
+	{
 		$this->pdf->AddPage('P', 'A4');
 	}
 
-	public function addFont(string $family, string $file, string $fontStyle = Settings::FONT_STYLE_NONE): void {
+	public function addFont(string $family, string $file, string $fontStyle = Settings::FONT_STYLE_NONE): void
+	{
 		$this->pdf->AddFont($family, $fontStyle, $file);
 	}
 
-	public function rect(float $x, float $y, float $width, float $height, ?callable $setCallback = null): void {
+	public function rect(float $x, float $y, float $width, float $height, ?callable $setCallback = null): void
+	{
 		$settings = $this->extractSettings($setCallback);
 
 		$this->setDrawing($settings);
@@ -68,7 +76,11 @@ class PDFRenderer implements IRenderer {
 		$this->pdf->Rect($x, $y, $width, $height, 'DF');
 	}
 
-	public function polygon(array $points, ?callable $setCallback = null): void {
+	/**
+	 * @param mixed[] $points
+	 */
+	public function polygon(array $points, ?callable $setCallback = null): void
+	{
 		$settings = $this->extractSettings($setCallback);
 
 		$this->setDrawing($settings);
@@ -79,9 +91,9 @@ class PDFRenderer implements IRenderer {
 	/**
 	 * (border, fill, align)
 	 */
-	public function cell(float $x, float $y, float $width, ?float $height, ?string $text, ?callable $setCallback = null): void {
+	public function cell(float $x, float $y, float $width, ?float $height, ?string $text, ?callable $setCallback = null): void
+	{
 		$text = iconv('UTF-8', 'WINDOWS-1250//TRANSLIT', (string) $text);
-
 
 		$settings = $this->extractSettings($setCallback);
 		$this->restoreSettings($settings, 'align');
@@ -96,11 +108,13 @@ class PDFRenderer implements IRenderer {
 		}
 	}
 
-	public function output(): string {
+	public function output(): string
+	{
 		return $this->pdf->Output('S');
 	}
 
-	protected function setFont(Settings $settings): void {
+	protected function setFont(Settings $settings): void
+	{
 		if ($settings->fontFamily === null && $settings->fontSize === null && $settings->fontColor === null) {
 			return;
 		}
@@ -116,7 +130,8 @@ class PDFRenderer implements IRenderer {
 		}
 	}
 
-	protected function setDrawing(Settings $settings): void {
+	protected function setDrawing(Settings $settings): void
+	{
 		if ($settings->drawColor !== null) {
 			$color = $settings->drawColor;
 
@@ -129,7 +144,8 @@ class PDFRenderer implements IRenderer {
 		}
 	}
 
-	protected function extractSettings(?callable $callback = null): Settings {
+	protected function extractSettings(?callable $callback = null): Settings
+	{
 		$settings = new Settings();
 		if ($callback !== null) {
 			$callback($settings);
@@ -138,13 +154,13 @@ class PDFRenderer implements IRenderer {
 		return $settings;
 	}
 
-	protected function restoreSettings(Settings $settings, string $name): void {
+	protected function restoreSettings(Settings $settings, string $name): void
+	{
 		if ($settings->$name === null) {
 			$settings->$name = $this->cache[$name];
 		} else {
 			$this->cache[$name] = $settings->$name;
 		}
 	}
-
 
 }

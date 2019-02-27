@@ -1,12 +1,11 @@
-<?php
+<?php declare(strict_types = 1);
 
-declare(strict_types=1);
-
-namespace WebChemistry\Invoice\Data;
+namespace Contributte\Invoice\Data;
 
 use Nette\SmartObject;
 
-abstract class Subject {
+abstract class Subject
+{
 
 	use SmartObject;
 
@@ -31,7 +30,8 @@ abstract class Subject {
 	/** @var string|null */
 	protected $vaTin;
 
-	public function __construct(string $name, ?string $town = null, ?string $address = null, ?string $zip = null, ?string $country = null, ?string $tin = null, ?string $vaTin = null) {
+	public function __construct(string $name, ?string $town = null, ?string $address = null, ?string $zip = null, ?string $country = null, ?string $tin = null, ?string $vaTin = null)
+	{
 		$this->name = $name;
 		$this->town = $town;
 		$this->address = $address;
@@ -41,31 +41,38 @@ abstract class Subject {
 		$this->vaTin = $vaTin;
 	}
 
-	public function getName(): string {
+	public function getName(): string
+	{
 		return $this->name;
 	}
 
-	public function getTown(): ?string {
+	public function getTown(): ?string
+	{
 		return $this->town;
 	}
 
-	public function getAddress(): ?string {
+	public function getAddress(): ?string
+	{
 		return $this->address;
 	}
 
-	public function getZip(): ?string {
+	public function getZip(): ?string
+	{
 		return $this->zip;
 	}
 
-	public function getCountry(): ?string {
+	public function getCountry(): ?string
+	{
 		return $this->country;
 	}
 
-	public function getTin(): ?string {
+	public function getTin(): ?string
+	{
 		return $this->tin;
 	}
 
-	public function getVaTin(): ?string {
+	public function getVaTin(): ?string
+	{
 		return $this->vaTin;
 	}
 

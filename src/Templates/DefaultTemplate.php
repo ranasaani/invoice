@@ -1,25 +1,24 @@
-<?php
+<?php declare(strict_types = 1);
 
-declare(strict_types=1);
-
-namespace WebChemistry\Invoice\Templates;
+namespace Contributte\Invoice\Templates;
 
 use Nette\SmartObject;
 use Nette\Utils\Strings;
-use WebChemistry\Invoice\Calculators\ICalculator;
-use WebChemistry\Invoice\Components\Paginator;
-use WebChemistry\Invoice\Data\Company;
-use WebChemistry\Invoice\Data\Customer;
-use WebChemistry\Invoice\Data\Item;
-use WebChemistry\Invoice\Data\Order;
-use WebChemistry\Invoice\Formatter;
-use WebChemistry\Invoice\ITranslator;
-use WebChemistry\Invoice\Renderers\Color;
-use WebChemistry\Invoice\Renderers\IRenderer;
-use WebChemistry\Invoice\Renderers\Settings;
-use WebChemistry\Invoice\Translator;
+use Contributte\Invoice\Calculators\ICalculator;
+use Contributte\Invoice\Components\Paginator;
+use Contributte\Invoice\Data\Company;
+use Contributte\Invoice\Data\Customer;
+use Contributte\Invoice\Data\Item;
+use Contributte\Invoice\Data\Order;
+use Contributte\Invoice\Formatter;
+use Contributte\Invoice\ITranslator;
+use Contributte\Invoice\Renderers\Color;
+use Contributte\Invoice\Renderers\IRenderer;
+use Contributte\Invoice\Renderers\Settings;
+use Contributte\Invoice\Translator;
 
-class DefaultTemplate implements ITemplate {
+class DefaultTemplate implements ITemplate
+{
 
 	use SmartObject;
 
@@ -56,7 +55,8 @@ class DefaultTemplate implements ITemplate {
 	/** @var ICalculator */
 	private $calculator;
 
-	public function __construct(?ITranslator $translator = null, ?Formatter $formatter = null) {
+	public function __construct(?ITranslator $translator = null, ?Formatter $formatter = null)
+	{
 		$this->primary = new Color(6, 178, 194);
 		$this->font = new Color(52, 52, 53);
 		$this->even = new Color(241, 240, 240);
@@ -65,7 +65,8 @@ class DefaultTemplate implements ITemplate {
 		$this->formatter = $formatter ?: new Formatter();
 	}
 
-	public function build(ICalculator $calculator, IRenderer $renderer, Customer $customer, Order $order, Company $company): string {
+	public function build(ICalculator $calculator, IRenderer $renderer, Customer $customer, Order $order, Company $company): string
+	{
 		$this->renderer = $renderer;
 		$this->customer = $customer;
 		$this->order = $order;
@@ -103,7 +104,8 @@ class DefaultTemplate implements ITemplate {
 		return $this->renderer->output();
 	}
 
-	protected function buildTotal(int $offset): void {
+	protected function buildTotal(int $offset): void
+	{
 		$renderer = $this->renderer;
 		$half = ($renderer->width() - 553) / 2;
 
@@ -130,7 +132,8 @@ class DefaultTemplate implements ITemplate {
 		});
 	}
 
-	protected function buildItems(int $offset, array $items): int {
+	protected function buildItems(int $offset, array $items): int
+	{
 		$renderer = $this->renderer;
 
 		/**
@@ -173,7 +176,8 @@ class DefaultTemplate implements ITemplate {
 		return $offset;
 	}
 
-	protected function buildMain(): void {
+	protected function buildMain(): void
+	{
 		$renderer = $this->renderer;
 
 		$renderer->rect(0, 307, $renderer->width(), 29, function (Settings $settings) {
@@ -188,7 +192,6 @@ class DefaultTemplate implements ITemplate {
 			$settings->setFillDrawColor($this->primary);
 		});
 		$renderer->rect(0, 336, $renderer->width(), 1);
-
 
 		$renderer->cell(33, 307, 360, 29.0, Strings::upper($this->translator->translate('item')), function (Settings $settings) {
 			$settings->fontColor = $this->primary;
@@ -210,7 +213,8 @@ class DefaultTemplate implements ITemplate {
 		});
 	}
 
-	protected function buildHeader(): void {
+	protected function buildHeader(): void
+	{
 		$renderer = $this->renderer;
 
 		$renderer->polygon([
@@ -308,7 +312,8 @@ class DefaultTemplate implements ITemplate {
 		});
 	}
 
-	protected function buildLeftPane(): void {
+	protected function buildLeftPane(): void
+	{
 		$renderer = $this->renderer;
 		$text = Strings::upper($this->translator->translate('subscriber'));
 
@@ -321,8 +326,8 @@ class DefaultTemplate implements ITemplate {
 		$x = $renderer->textWidth($text) + 76;
 
 		$x = max($x, $renderer->textWidth($this->customer->getName(), function (Settings $settings) {
-			$settings->fontSize = 7;
-		}) + 76);
+				$settings->fontSize = 7;
+			}) + 76);
 
 		$renderer->polygon([
 			$x, 190,
@@ -366,7 +371,8 @@ class DefaultTemplate implements ITemplate {
 		}
 	}
 
-	protected function buildRightPane(): void {
+	protected function buildRightPane(): void
+	{
 		$renderer = $this->renderer;
 
 		$renderer->cell(450, 145, 1, null, Strings::upper($this->translator->translate('paymentData')), function (Settings $settings) {
@@ -445,7 +451,8 @@ class DefaultTemplate implements ITemplate {
 		$renderer->cell(465 + 100, 189 + ($multiplier * 15), 1, null, $this->formatter->formatMoney($this->order->getTotalPrice($this->calculator, $this->company->hasTax()), $this->order->getPayment()->getCurrency()), $textCb);
 	}
 
-	protected function buildFooter(Paginator $paginator): void {
+	protected function buildFooter(Paginator $paginator): void
+	{
 		$renderer = $this->renderer;
 
 		$renderer->rect(0, $renderer->height() - 20, $renderer->width(), 20, function (Settings $settings) {

@@ -1,18 +1,17 @@
-<?php
+<?php declare(strict_types = 1);
 
-declare(strict_types=1);
+namespace Contributte\Invoice\Templates;
 
-namespace WebChemistry\Invoice\Templates;
-
-use WebChemistry\Invoice\Calculators\ICalculator;
-use WebChemistry\Invoice\Data\Company;
+use Contributte\Invoice\Calculators\ICalculator;
+use Contributte\Invoice\Data\Company;
 use WebChemistry\Invoice\Data\Customer;
-use WebChemistry\Invoice\Data\Order;
-use WebChemistry\Invoice\Formatter;
-use WebChemistry\Invoice\ITranslator;
-use WebChemistry\Invoice\Renderers\IRenderer;
+use Contributte\Invoice\Data\Order;
+use Contributte\Invoice\Formatter;
+use Contributte\Invoice\ITranslator;
+use Contributte\Invoice\Renderers\IRenderer;
 
-interface ITemplate {
+interface ITemplate
+{
 
 	public function __construct(ITranslator $translator, Formatter $formatter);
 

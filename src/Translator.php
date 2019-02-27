@@ -1,17 +1,18 @@
-<?php
+<?php declare(strict_types = 1);
 
-namespace WebChemistry\Invoice;
+namespace Contributte\Invoice;
 
 use Nette\SmartObject;
 
-class Translator implements ITranslator {
+class Translator implements ITranslator
+{
 
 	use SmartObject;
 
-	const ENGLISH = 'en',
-		  CZECH = 'cs';
+	public const ENGLISH = 'en',
+		CZECH = 'cs';
 
-	/** @var array[] */
+	/** @var mixed[] */
 	private static $translations = [
 		'cs' => [
 			'subscriber' => 'Odběratel',
@@ -37,7 +38,7 @@ class Translator implements ITranslator {
 			'constSymbol' => 'Konstant. symbol',
 			'tax' => 'DPH',
 			'subtotal' => 'Mezisoučet',
-			'dueDate' => 'Datum splatnosti'
+			'dueDate' => 'Datum splatnosti',
 		],
 		'en' => [
 			'subscriber' => 'Subscriber',
@@ -63,21 +64,23 @@ class Translator implements ITranslator {
 			'constSymbol' => 'Constant symbol',
 			'tax' => 'TAX',
 			'subtotal' => 'Subtotal',
-			'dueDate' => 'Due date'
-		]
+			'dueDate' => 'Due date',
+		],
 	];
 
 	/** @var string */
 	private $lang;
 
-	public function __construct(string $lang = self::ENGLISH) {
+	public function __construct(string $lang = self::ENGLISH)
+	{
 		$this->lang = $lang;
 		if (!isset(self::$translations[$this->lang])) {
-			throw new InvoiceException("Language $lang not exists.");
+			throw new InvoiceException(sprintf('Language %s not exists.', $lang));
 		}
 	}
 
-	public function translate(string $message): string {
+	public function translate(string $message): string
+	{
 		return self::$translations[$this->lang][$message];
 	}
 

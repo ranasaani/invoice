@@ -1,12 +1,11 @@
-<?php
+<?php declare(strict_types = 1);
 
-declare(strict_types=1);
-
-namespace WebChemistry\Invoice\Data;
+namespace Contributte\Invoice\Data;
 
 use Nette\SmartObject;
 
-class PaymentInformation {
+class PaymentInformation
+{
 
 	use SmartObject;
 
@@ -22,26 +21,31 @@ class PaymentInformation {
 	/** @var float|null */
 	private $tax;
 
-	public function __construct(string $currency, ?string $variableSymbol = null, ?string $constantSymbol = null, ?float $tax = null) {
+	public function __construct(string $currency, ?string $variableSymbol = null, ?string $constantSymbol = null, ?float $tax = null)
+	{
 		$this->currency = $currency;
 		$this->variableSymbol = $variableSymbol;
 		$this->constantSymbol = $constantSymbol;
 		$this->tax = $tax;
 	}
 
-	public function getCurrency(): string {
+	public function getCurrency(): string
+	{
 		return $this->currency;
 	}
 
-	public function getVariableSymbol(): ?string {
+	public function getVariableSymbol(): ?string
+	{
 		return $this->variableSymbol;
 	}
 
-	public function getConstantSymbol(): ?string {
+	public function getConstantSymbol(): ?string
+	{
 		return $this->constantSymbol;
 	}
 
-	public function getTax(): ?float {
+	public function getTax(): ?float
+	{
 		return $this->tax;
 	}
 

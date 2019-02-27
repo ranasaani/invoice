@@ -1,13 +1,12 @@
-<?php
+<?php declare(strict_types = 1);
 
-declare(strict_types = 1);
+namespace Contributte\Invoice\Components;
 
-namespace WebChemistry\Invoice\Components;
-
+use Contributte\Invoice\Data\Item;
 use Nette\SmartObject;
-use WebChemistry\Invoice\Data\Item;
 
-class Paginator {
+class Paginator
+{
 
 	use SmartObject;
 
@@ -26,38 +25,45 @@ class Paginator {
 	/**
 	 * @param Item[] $items
 	 */
-	public function __construct(array $items, int $itemsPerPage) {
+	public function __construct(array $items, int $itemsPerPage)
+	{
 		$this->items = $items;
-		$this->totalPages = (int)ceil(count($this->items) / $itemsPerPage);
+		$this->totalPages = (int) ceil(count($this->items) / $itemsPerPage);
 		$this->itemsPerPage = $itemsPerPage;
 	}
 
-	public function getTotalPages(): int {
+	public function getTotalPages(): int
+	{
 		return $this->totalPages;
 	}
 
 	/**
 	 * @return Item[]
 	 */
-	public function getItems(): array {
+	public function getItems(): array
+	{
 		$page = $this->currentPage - 1;
 
 		return array_slice($this->items, $page * $this->itemsPerPage, $page * $this->itemsPerPage + $this->itemsPerPage);
 	}
 
-	public function isFirstPage(): bool {
+	public function isFirstPage(): bool
+	{
 		return $this->currentPage === 1;
 	}
 
-	public function isLastPage(): bool {
+	public function isLastPage(): bool
+	{
 		return $this->currentPage >= $this->getTotalPages();
 	}
 
-	public function getCurrentPage(): int {
+	public function getCurrentPage(): int
+	{
 		return $this->currentPage;
 	}
 
-	public function nextPage(): bool {
+	public function nextPage(): bool
+	{
 		if ($this->isLastPage()) {
 			return false;
 		}

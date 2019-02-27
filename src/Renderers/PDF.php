@@ -1,12 +1,14 @@
-<?php
+<?php declare(strict_types = 1);
 
-declare(strict_types=1);
+namespace Contributte\Invoice\Renderers;
 
-namespace WebChemistry\Invoice\Renderers;
+use FPDF;
 
-class PDF extends \FPDF {
+class PDF extends FPDF
+{
 
-	public function __construct(string $orientation = 'P', string $unit = 'mm', string $size = 'A4') {
+	public function __construct(string $orientation = 'P', string $unit = 'mm', string $size = 'A4')
+	{
 		$px = false;
 		if ($unit === 'px') {
 			$unit = 'pt';
@@ -15,22 +17,24 @@ class PDF extends \FPDF {
 		parent::__construct($orientation, $unit, $size);
 
 		if ($px) {
-			$this->k = 72/96;
+			$this->k = 72 / 96;
 
-			$this->wPt = $this->w*$this->k;
-			$this->hPt = $this->h*$this->k;
+			$this->wPt = $this->w * $this->k;
+			$this->hPt = $this->h * $this->k;
 		}
 	}
 
-	function SetFontPath($fontPath) {
+	function SetFontPath($fontPath)
+	{
 		$this->fontpath = $fontPath;
 	}
 
-	function Polygon($points, $style = 'D') {
+	function Polygon($points, $style = 'D')
+	{
 		//Draw a polygon
 		if ($style == 'F') {
 			$op = 'f';
-		} else if ($style == 'FD' || $style == 'DF') {
+		} elseif ($style == 'FD' || $style == 'DF') {
 			$op = 'b';
 		} else {
 			$op = 's';

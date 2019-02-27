@@ -1,9 +1,8 @@
-<?php
+<?php declare(strict_types = 1);
 
-declare(strict_types=1);
+namespace Contributte\Invoice\Data;
 
-namespace WebChemistry\Invoice\Data;
-
-class Customer extends Subject {
+class Customer extends Subject
+{
 
 }

@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/WebChemistry/invoice.svg?branch=master)](https://travis-ci.org/WebChemistry/invoice)
+[![Build Status](https://travis-ci.org/Contributte/invoice.svg?branch=master)](https://travis-ci.org/Contributte/invoice)
 
 # PHP Invoice
 
@@ -9,7 +9,7 @@ Average output ~20ms
 php 7.1
 
 ```
-composer require webchemistry/invoice
+composer require contributte/invoice
 ```
 
 ## Usage
@@ -17,31 +17,31 @@ composer require webchemistry/invoice
 ### Company
 
 ```php
-$company = new WebChemistry\Invoice\Data\Company('John Doe', 'Los Angeles', 'Cavetown', '720 55', 'USA', '0123456789', 'CZ0123456789');
+$company = new Contributte\Invoice\Data\Company('John Doe', 'Los Angeles', 'Cavetown', '720 55', 'USA', '0123456789', 'CZ0123456789');
 ```
 
 ### Customer
 
 ```php
-$customer = new WebChemistry\Invoice\Data\Customer('John Doe', 'Los Angeles', 'Cavetown', '720 55', 'USA');
+$customer = new Contributte\Invoice\Data\Customer('John Doe', 'Los Angeles', 'Cavetown', '720 55', 'USA');
 ```
 
 ### Account
 
 ```php
-$account = new WebChemistry\Invoice\Data\Account('1111', 'CZ4808000000002353462015', 'GIGACZPX');
+$account = new Contributte\Invoice\Data\Account('1111', 'CZ4808000000002353462015', 'GIGACZPX');
 ```
 
 ### Payment info
 
 ```php
-$payment = new WebChemistry\Invoice\Data\PaymentInformation('Kč', '0123456789', '1234', 0.21);
+$payment = new Contributte\Invoice\Data\PaymentInformation('Kč', '0123456789', '1234', 0.21);
 ```
 
 ### Order
 
 ```php
-$order = new WebChemistry\Invoice\Data\Order('20160001', new \DateTime('+ 14 days'), $account, $payment);
+$order = new Contributte\Invoice\Data\Order('20160001', new \DateTime('+ 14 days'), $account, $payment);
 ```
 
 Adding items
@@ -61,7 +61,7 @@ class CustomFormatter implements IFormatter {
 ## Generating invoices
 
 ```php
-$invoice = new WebChemistry\Invoice\Invoice($company);
+$invoice = new Contributte\Invoice\Invoice($company);
 
 header('Content-Type: application/pdf; charset=utf-8');
 echo $invoice->create($customer, $order);
@@ -69,14 +69,14 @@ echo $invoice->create($customer, $order);
 
 shorter
 ```php
-$invoice = new WebChemistry\Invoice\Invoice($company);
+$invoice = new Contributte\Invoice\Invoice($company);
 
 $invoice->send($customer, $order);
 ```
 
 nette framework way
 ```php
-$invoice = new WebChemistry\Invoice\Invoice($company);
+$invoice = new Contributte\Invoice\Invoice($company);
 
 $this->sendResponse($invoice->createResponse($customer, $order));
 ```
@@ -84,7 +84,7 @@ $this->sendResponse($invoice->createResponse($customer, $order));
 ## Generating preview
 
 ```php
-$invoice->send(WebChemistry\Invoice\Preview\PreviewFactory::createCustomer(), WebChemistry\Invoice\Preview\PreviewFactory::createOrder());
+$invoice->send(Contributte\Invoice\Preview\PreviewFactory::createCustomer(), Contributte\Invoice\Preview\PreviewFactory::createOrder());
 ```
 
 ```php
@@ -95,7 +95,7 @@ $invoice->send(WebChemistry\Invoice\Preview\PreviewFactory::createCustomer(), We
 
 ```yaml
 extensions:
-	invoice: WebChemistry\Invoice\DI\InvoiceExtension
+	invoice: Contributte\Invoice\DI\InvoiceExtension
 
 invoice:
 	lang: en
@@ -115,7 +115,7 @@ invoice:
 
 class Component {
 
-	public function __construct(WebChemistry\Invoice\Invoice $invoice) {
+	public function __construct(Contributte\Invoice\Invoice $invoice) {
 		// ...
 	}
 }

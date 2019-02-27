@@ -1,24 +1,23 @@
-<?php
+<?php declare(strict_types = 1);
 
-declare(strict_types=1);
+namespace Contributte\Invoice\DI;
 
-namespace WebChemistry\Invoice\DI;
-
+use Contributte\Invoice\Data\Company;
+use Contributte\Invoice\Formatter;
+use Contributte\Invoice\IFormatter;
+use Contributte\Invoice\Invoice;
+use Contributte\Invoice\ITranslator;
+use Contributte\Invoice\Renderers\IRenderer;
+use Contributte\Invoice\Renderers\PDFRenderer;
+use Contributte\Invoice\Templates\DefaultTemplate;
+use Contributte\Invoice\Templates\ITemplate;
+use Contributte\Invoice\Translator;
 use Nette\DI\CompilerExtension;
-use WebChemistry\Invoice\Data\Company;
-use WebChemistry\Invoice\Formatter;
-use WebChemistry\Invoice\IFormatter;
-use WebChemistry\Invoice\Invoice;
-use WebChemistry\Invoice\ITranslator;
-use WebChemistry\Invoice\Renderers\IRenderer;
-use WebChemistry\Invoice\Renderers\PDFRenderer;
-use WebChemistry\Invoice\Templates\DefaultTemplate;
-use WebChemistry\Invoice\Templates\ITemplate;
-use WebChemistry\Invoice\Translator;
 
-class InvoiceExtension extends CompilerExtension {
+class InvoiceExtension extends CompilerExtension
+{
 
-	/** @var array[] */
+	/** @var mixed[] */
 	public $defaults = [
 		'company' => [
 			'name' => null,
@@ -33,7 +32,8 @@ class InvoiceExtension extends CompilerExtension {
 		'lang' => 'en',
 	];
 
-	public function loadConfiguration(): void {
+	public function loadConfiguration(): void
+	{
 		$builder = $this->getContainerBuilder();
 		$config = $this->validateConfig($this->defaults);
 
@@ -58,7 +58,6 @@ class InvoiceExtension extends CompilerExtension {
 
 		$builder->addDefinition($this->prefix('invoice'))
 			->setFactory(Invoice::class);
-
 	}
 
 }

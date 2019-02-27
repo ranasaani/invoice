@@ -1,20 +1,23 @@
 <?php declare(strict_types = 1);
 
-namespace WebChemistry\Invoice\Preview;
+namespace Contributte\Invoice\Preview;
 
+use Contributte\Invoice\Data\Account;
+use Contributte\Invoice\Data\Customer;
+use Contributte\Invoice\Data\Order;
+use Contributte\Invoice\Data\PaymentInformation;
 use DateTime;
-use WebChemistry\Invoice\Data\Account;
-use WebChemistry\Invoice\Data\Customer;
-use WebChemistry\Invoice\Data\Order;
-use WebChemistry\Invoice\Data\PaymentInformation;
 
-final class PreviewFactory {
+final class PreviewFactory
+{
 
-	public static function createCustomer(): Customer {
+	public static function createCustomer(): Customer
+	{
 		return new Customer('John Doe', 'Los Angeles', 'Cavetown', '720 55', 'USA', '08304431', 'CZ08304431');
 	}
 
-	public static function createOrder(): Order {
+	public static function createOrder(): Order
+	{
 		$account = new Account('2353462013/0800', 'CZ4808000000002353462013', 'GIGACZPX');
 		$paymentInfo = new PaymentInformation('$', '0123456789', '1234', 0.21);
 

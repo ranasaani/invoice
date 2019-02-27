@@ -1,8 +1,9 @@
 <?php declare(strict_types = 1);
 
-namespace WebChemistry\Invoice\Calculators;
+namespace Contributte\Invoice\Calculators;
 
-interface ICalculator {
+interface ICalculator
+{
 
 	/**
 	 * @param string|int|float $op1
@@ -35,7 +36,6 @@ interface ICalculator {
 	/**
 	 * @param string|int|float $op1
 	 * @param string|int|float $op2
-	 * @return int
 	 */
 	public function comp($op1, $op2): int;
 

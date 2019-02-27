@@ -1,12 +1,11 @@
-<?php
+<?php declare(strict_types = 1);
 
-declare(strict_types=1);
+namespace Contributte\Invoice\Renderers;
 
-namespace WebChemistry\Invoice\Renderers;
+interface IRenderer
+{
 
-interface IRenderer {
-
-	const ASSETS_PATH = __DIR__ . '/../../assets/';
+	public const ASSETS_PATH = __DIR__ . '/../../assets/';
 
 	public function x(): int;
 
@@ -26,6 +25,9 @@ interface IRenderer {
 
 	public function rect(float $x, float $y, float $width, float $height, ?callable $setCallback = null): void;
 
+	/**
+	 * @param mixed[] $points
+	 */
 	public function polygon(array $points, ?callable $setCallback = null): void;
 
 	public function cell(float $x, float $y, float $width, ?float $height, ?string $text, ?callable $setCallback = null): void;

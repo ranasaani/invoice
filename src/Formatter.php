@@ -1,32 +1,33 @@
-<?php
+<?php declare(strict_types = 1);
 
-declare(strict_types=1);
+namespace Contributte\Invoice;
 
-namespace WebChemistry\Invoice;
-
+use DateTime;
 use Nette\SmartObject;
 
-class Formatter implements IFormatter {
+class Formatter implements IFormatter
+{
 
 	use SmartObject;
 
 	public const ENGLISH = 'en';
+
 	public const CZECH = 'cs';
 
-	/** @var array */
+	/** @var mixed[] */
 	private static $options = [
 		'cs' => [
 			'number' => [
 				'dec' => ',',
-				'sep' => ' '
+				'sep' => ' ',
 			],
 			'money' => '%money %currency',
 			'date' => 'd.m.Y',
 		],
 		'en' => [
 			'number' => [
-				'dec' => NULL,
-				'sep' => NULL
+				'dec' => null,
+				'sep' => null,
 			],
 			'money' => '%currency %money',
 			'date' => 'd/m/Y',
@@ -36,19 +37,29 @@ class Formatter implements IFormatter {
 	/** @var string */
 	private $lang;
 
-	public function __construct(string $lang = self::ENGLISH) {
+	public function __construct(string $lang = self::ENGLISH)
+	{
 		$this->lang = $lang;
 	}
 
-	public function formatNumber($number): string {
+	/**
+	 * @param mixed $number
+	 */
+	public function formatNumber($number): string
+	{
 		return number_format((float) $number, 2, self::$options[$this->lang]['number']['dec'], self::$options[$this->lang]['number']['sep']);
 	}
 
-	public function formatMoney($number, string $currency): string {
+	/**
+	 * @param mixed $number
+	 */
+	public function formatMoney($number, string $currency): string
+	{
 		return strtr(self::$options[$this->lang]['money'], ['%money' => $this->formatNumber($number), '%currency' => $currency]);
 	}
 
-	public function formatDate(\DateTime $date): string {
+	public function formatDate(DateTime $date): string
+	{
 		return $date->format(self::$options[$this->lang]['date']);
 	}
 

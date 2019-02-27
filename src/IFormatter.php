@@ -1,12 +1,11 @@
-<?php
+<?php declare(strict_types = 1);
 
-declare(strict_types=1);
-
-namespace WebChemistry\Invoice;
+namespace Contributte\Invoice;
 
 use DateTime;
 
-interface IFormatter {
+interface IFormatter
+{
 
 	/**
 	 * @param mixed $number

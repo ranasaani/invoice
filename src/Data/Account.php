@@ -1,12 +1,11 @@
-<?php
+<?php declare(strict_types = 1);
 
-declare(strict_types=1);
-
-namespace WebChemistry\Invoice\Data;
+namespace Contributte\Invoice\Data;
 
 use Nette\SmartObject;
 
-class Account {
+class Account
+{
 
 	use SmartObject;
 
@@ -19,23 +18,25 @@ class Account {
 	/** @var string|null */
 	private $swift;
 
-	public function __construct(string $accountNumber, ?string $iBan = null, ?string $swift = null) {
+	public function __construct(string $accountNumber, ?string $iBan = null, ?string $swift = null)
+	{
 		$this->accountNumber = $accountNumber;
 		$this->iBan = $iBan;
 		$this->swift = $swift;
 	}
 
-	/////////////////////////////////////////////////////////////////
-
-	public function getAccountNumber(): string {
+	public function getAccountNumber(): string
+	{
 		return $this->accountNumber;
 	}
 
-	public function getIBan(): ?string {
+	public function getIBan(): ?string
+	{
 		return $this->iBan;
 	}
 
-	public function getSwift(): ?string {
+	public function getSwift(): ?string
+	{
 		return $this->swift;
 	}
 

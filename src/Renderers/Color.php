@@ -1,12 +1,11 @@
-<?php
+<?php declare(strict_types = 1);
 
-declare(strict_types=1);
-
-namespace WebChemistry\Invoice\Renderers;
+namespace Contributte\Invoice\Renderers;
 
 use Nette\SmartObject;
 
-class Color {
+class Color
+{
 
 	use SmartObject;
 
@@ -19,29 +18,35 @@ class Color {
 	/** @var int */
 	private $blue;
 
-	public function __construct(int $red, int $green, int $blue) {
+	public function __construct(int $red, int $green, int $blue)
+	{
 		$this->red = $red;
 		$this->green = $green;
 		$this->blue = $blue;
 	}
 
-	public function getRed(): int {
+	public function getRed(): int
+	{
 		return $this->red;
 	}
 
-	public function getGreen(): int {
+	public function getGreen(): int
+	{
 		return $this->green;
 	}
 
-	public function getBlue(): int {
+	public function getBlue(): int
+	{
 		return $this->blue;
 	}
 
-	protected function adjustColor(int $dimension): int {
+	protected function adjustColor(int $dimension): int
+	{
 		return max(0, min(255, $dimension));
 	}
 
-	protected function lightenDarken(int $percentage): Color {
+	protected function lightenDarken(int $percentage): Color
+	{
 		$percentage = round($percentage / 100, 2);
 
 		return new Color(
@@ -51,23 +56,27 @@ class Color {
 		);
 	}
 
-	public function lighten(int $percentage): Color {
+	public function lighten(int $percentage): Color
+	{
 		$percentage = max(0, min(100, $percentage));
 
 		return $this->lightenDarken(-$percentage);
 	}
 
-	public function darken(int $percentage): Color {
+	public function darken(int $percentage): Color
+	{
 		$percentage = max(0, min(100, $percentage));
 
 		return $this->lightenDarken($percentage);
 	}
 
-	public static function black(): Color {
+	public static function black(): Color
+	{
 		return new Color(0, 0, 0);
 	}
 
-	public static function white(): Color {
+	public static function white(): Color
+	{
 		return new Color(255, 255, 255);
 	}
 

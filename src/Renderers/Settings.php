@@ -1,62 +1,71 @@
-<?php
+<?php declare(strict_types = 1);
 
-declare(strict_types=1);
-
-namespace WebChemistry\Invoice\Renderers;
+namespace Contributte\Invoice\Renderers;
 
 use Nette\SmartObject;
 
-class Settings {
+class Settings
+{
 
 	use SmartObject;
 
-	const DEFAULT_FONT_SIZE = null;
+	public const DEFAULT_FONT_SIZE = null;
 
-	const BORDER_LEFT = 'L',
+	public const BORDER_LEFT = 'L',
 		BORDER_RIGHT = 'R',
 		BORDER_TOP = 'T',
 		BORDER_BOTTOM = 'B',
 		NO_BORDER = 0,
 		BORDER = 1;
 
-	const ALIGN_LEFT = 'L',
+	public const ALIGN_LEFT = 'L',
 		ALIGN_CENTER = 'C',
 		ALIGN_RIGHT = 'R',
 		ALIGN_JUSTIFY = 'J';
 
-	const FILL = true,
+	public const FILL = true,
 		NO_FILL = false;
 
-	const FONT_STYLE_NONE = '',
+	public const FONT_STYLE_NONE = '',
 		FONT_STYLE_ITALIC = 'I',
 		FONT_STYLE_BOLD = 'B',
 		FONT_STYLE_BOLD_ITALIC = 'BI';
 
-	// properties
-
+	/** @var int|string */
 	public $border = self::NO_BORDER;
 
+	/** @var string|null */
 	public $align = null;
 
+	/** @var bool */
 	public $fill = self::NO_FILL;
 
+	/** @var int|null */
 	public $fontSize = self::DEFAULT_FONT_SIZE;
 
+	/** @var string */
 	public $fontStyle = self::FONT_STYLE_NONE;
 
+	/** @var string|null */
 	public $fontFamily = null;
 
-	/** @var null|Color */
+	/** @var Color|null */
 	public $drawColor = null;
 
-	/** @var null|Color */
+	/** @var Color|null */
 	public $fontColor = null;
 
-	/** @var null|Color */
+	/** @var Color|null */
 	public $fillColor = null;
 
-	public function setFillDrawColor(?Color $color) {
+	/**
+	 * @return static
+	 */
+	public function setFillDrawColor(?Color $color)
+	{
 		$this->drawColor = $this->fillColor = $color;
+
+		return $this;
 	}
 
 }
