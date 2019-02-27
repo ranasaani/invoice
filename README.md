@@ -63,15 +63,32 @@ class CustomFormatter implements IFormatter {
 ```php
 $invoice = new WebChemistry\Invoice\Invoice($company);
 
-header('Content-Type: application/pdf');
+header('Content-Type: application/pdf; charset=utf-8');
 echo $invoice->create($customer, $order);
+```
+
+shorter
+```php
+$invoice = new WebChemistry\Invoice\Invoice($company);
+
+$invoice->send($customer, $order);
+```
+
+nette framework way
+```php
+$invoice = new WebChemistry\Invoice\Invoice($company);
+
+$this->sendResponse($invoice->createResponse($customer, $order));
 ```
 
 ## Generating preview
 
 ```php
-header('Content-Type: application/pdf');
-echo $invoice->generatePreview();
+$invoice->send(WebChemistry\Invoice\Preview\PreviewFactory::createCustomer(), WebChemistry\Invoice\Preview\PreviewFactory::createOrder());
+```
+
+```php
+
 ```
 
 ## Nette DI
