@@ -11,7 +11,7 @@ class Translator implements ITranslator {
 	const ENGLISH = 'en',
 		  CZECH = 'cs';
 
-	/** @var array */
+	/** @var array[] */
 	private static $translations = [
 		'cs' => [
 			'subscriber' => 'Odběratel',
@@ -70,10 +70,6 @@ class Translator implements ITranslator {
 	/** @var string */
 	private $lang;
 
-	/**
-	 * @param string $lang
-	 * @throws InvoiceException
-	 */
 	public function __construct(string $lang = self::ENGLISH) {
 		$this->lang = $lang;
 		if (!isset(self::$translations[$this->lang])) {
@@ -81,10 +77,6 @@ class Translator implements ITranslator {
 		}
 	}
 
-	/**
-	 * @param string $message
-	 * @return string
-	 */
 	public function translate(string $message): string {
 		return self::$translations[$this->lang][$message];
 	}

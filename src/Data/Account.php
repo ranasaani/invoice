@@ -19,11 +19,6 @@ class Account {
 	/** @var string|null */
 	private $swift;
 
-	/**
-	 * @param string $accountNumber
-	 * @param string|null $iBan
-	 * @param string|null $swift
-	 */
 	public function __construct(string $accountNumber, ?string $iBan = null, ?string $swift = null) {
 		$this->accountNumber = $accountNumber;
 		$this->iBan = $iBan;
@@ -32,23 +27,14 @@ class Account {
 
 	/////////////////////////////////////////////////////////////////
 
-	/**
-	 * @return string
-	 */
 	public function getAccountNumber(): string {
 		return $this->accountNumber;
 	}
 
-	/**
-	 * @return null|string
-	 */
 	public function getIBan(): ?string {
 		return $this->iBan;
 	}
 
-	/**
-	 * @return null|string
-	 */
 	public function getSwift(): ?string {
 		return $this->swift;
 	}

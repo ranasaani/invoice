@@ -2,6 +2,8 @@
 
 # PHP Invoice
 
+Average output ~20ms
+
 ## Installation
 
 php 7.1
@@ -15,31 +17,31 @@ composer require webchemistry/invoice
 ### Company
 
 ```php
-$company = WebChemistry\Invoice\InvoiceFactory::createCompany('John Doe', 'Los Angeles', 'Cavetown', '720 55', 'USA', '0123456789', 'CZ0123456789');
+$company = new WebChemistry\Invoice\Data\Company('John Doe', 'Los Angeles', 'Cavetown', '720 55', 'USA', '0123456789', 'CZ0123456789');
 ```
 
 ### Customer
 
 ```php
-$customer = WebChemistry\Invoice\InvoiceFactory::createCustomer('John Doe', 'Los Angeles', 'Cavetown', '720 55', 'USA');
+$customer = new WebChemistry\Invoice\Data\Customer('John Doe', 'Los Angeles', 'Cavetown', '720 55', 'USA');
 ```
 
 ### Account
 
 ```php
-$account = WebChemistry\Invoice\InvoiceFactory::createAccount('1111', 'CZ4808000000002353462015', 'GIGACZPX');
+$account = new WebChemistry\Invoice\Data\Account('1111', 'CZ4808000000002353462015', 'GIGACZPX');
 ```
 
 ### Payment info
 
 ```php
-$payment = WebChemistry\Invoice\InvoiceFactory::createPaymentInformation('Kč', '0123456789', '1234', 0.21);
+$payment = new WebChemistry\Invoice\Data\PaymentInformation('Kč', '0123456789', '1234', 0.21);
 ```
 
 ### Order
 
 ```php
-$order = WebChemistry\Invoice\InvoiceFactory::createOrder('20160001', new \DateTime('+ 14 days'), $account, $payment);
+$order = new WebChemistry\Invoice\Data\Order('20160001', new \DateTime('+ 14 days'), $account, $payment);
 ```
 
 Adding items
@@ -53,32 +55,13 @@ $order->addItem('Logitech G700s Rechargeable Gaming Mouse', 4, 1790);
 ```php
 class CustomFormatter implements IFormatter {
 	
-	/**
-	 * @param float $float
-	 * @return string
-	 */
-	public function formatNumber($float) {}
-
-	/**
-	 * @param float $float
-	 * @param string $currency
-	 * @return string
-	 */
-	public function formatMoney($float, $currency) {}
-
-	/**
-	 * @param \DateTime $date
-	 * @return string
-	 */
-	public function formatDate(\DateTime $date) {}
-	
 }
 ```
 
 ## Generating invoices
 
 ```php
-$invoice = new \WebChemistry\Invoice\Invoice($company);
+$invoice = new WebChemistry\Invoice\Invoice($company);
 
 header('Content-Type: application/pdf');
 echo $invoice->create($customer, $order);

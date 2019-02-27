@@ -4,25 +4,20 @@ declare(strict_types=1);
 
 namespace WebChemistry\Invoice;
 
+use DateTime;
+
 interface IFormatter {
 
 	/**
-	 * @param float $float
-	 * @return string
+	 * @param mixed $number
 	 */
-	public function formatNumber($float): string;
+	public function formatNumber($number): string;
 
 	/**
-	 * @param float $float
-	 * @param string $currency
-	 * @return string
+	 * @param mixed $number
 	 */
-	public function formatMoney($float, string $currency): string;
+	public function formatMoney($number, string $currency): string;
 
-	/**
-	 * @param \DateTime $date
-	 * @return string
-	 */
-	public function formatDate(\DateTime $date): string;
+	public function formatDate(DateTime $date): string;
 
 }

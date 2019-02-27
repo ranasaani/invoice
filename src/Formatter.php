@@ -10,8 +10,8 @@ class Formatter implements IFormatter {
 
 	use SmartObject;
 
-	const ENGLISH = 'en',
-		CZECH = 'cs';
+	public const ENGLISH = 'en';
+	public const CZECH = 'cs';
 
 	/** @var array */
 	private static $options = [
@@ -40,12 +40,12 @@ class Formatter implements IFormatter {
 		$this->lang = $lang;
 	}
 
-	public function formatNumber($float): string {
-		return number_format($float, 2, self::$options[$this->lang]['number']['dec'], self::$options[$this->lang]['number']['sep']);
+	public function formatNumber($number): string {
+		return number_format((float) $number, 2, self::$options[$this->lang]['number']['dec'], self::$options[$this->lang]['number']['sep']);
 	}
 
-	public function formatMoney($float, string $currency): string {
-		return strtr(self::$options[$this->lang]['money'], ['%money' => $this->formatNumber($float), '%currency' => $currency]);
+	public function formatMoney($number, string $currency): string {
+		return strtr(self::$options[$this->lang]['money'], ['%money' => $this->formatNumber($number), '%currency' => $currency]);
 	}
 
 	public function formatDate(\DateTime $date): string {

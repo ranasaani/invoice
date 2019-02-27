@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace WebChemistry\Invoice\Components;
 
@@ -25,17 +25,13 @@ class Paginator {
 
 	/**
 	 * @param Item[] $items
-	 * @param int $itemsPerPage
 	 */
 	public function __construct(array $items, int $itemsPerPage) {
 		$this->items = $items;
-		$this->totalPages = (int) ceil(count($this->items) / $itemsPerPage);
+		$this->totalPages = (int)ceil(count($this->items) / $itemsPerPage);
 		$this->itemsPerPage = $itemsPerPage;
 	}
 
-	/**
-	 * @return int
-	 */
 	public function getTotalPages(): int {
 		return $this->totalPages;
 	}
@@ -53,30 +49,21 @@ class Paginator {
 		return $this->currentPage === 1;
 	}
 
-	/**
-	 * @return bool
-	 */
 	public function isLastPage(): bool {
 		return $this->currentPage >= $this->getTotalPages();
 	}
 
-	/**
-	 * @return int
-	 */
 	public function getCurrentPage(): int {
 		return $this->currentPage;
 	}
 
-	/**
-	 * @return bool
-	 */
 	public function nextPage(): bool {
 		if ($this->isLastPage()) {
-			return FALSE;
+			return false;
 		}
 		$this->currentPage++;
 
-		return TRUE;
+		return true;
 	}
 
 }

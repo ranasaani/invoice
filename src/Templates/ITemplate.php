@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace WebChemistry\Invoice\Templates;
 
+use WebChemistry\Invoice\Calculators\ICalculator;
 use WebChemistry\Invoice\Data\Company;
 use WebChemistry\Invoice\Data\Customer;
 use WebChemistry\Invoice\Data\Order;
@@ -15,6 +16,6 @@ interface ITemplate {
 
 	public function __construct(ITranslator $translator, Formatter $formatter);
 
-	public function build(IRenderer $renderer, Customer $customer, Order $order, Company $company): string;
+	public function build(ICalculator $calculator, IRenderer $renderer, Customer $customer, Order $order, Company $company): string;
 
 }

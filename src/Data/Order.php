@@ -4,17 +4,18 @@ declare(strict_types=1);
 
 namespace WebChemistry\Invoice\Data;
 
+use DateTime;
 use Nette\SmartObject;
-use WebChemistry\Invoice\InvoiceException;
+use WebChemistry\Invoice\Calculators\ICalculator;
 
 class Order {
 
 	use SmartObject;
 
-	/** @var string|int */
+	/** @var string */
 	private $number;
 
-	/** @var \DateTime */
+	/** @var DateTime */
 	private $dueDate;
 
 	/** @var Account */
@@ -23,97 +24,64 @@ class Order {
 	/** @var PaymentInformation */
 	private $payment;
 
-	/** @var \DateTime */
+	/** @var DateTime */
 	private $created;
 
 	/** @var Item[] */
 	private $items = [];
 
-	/** @var bool */
-	private $hasPriceWithTax = FALSE;
+	/** @var string|float|int|null */
+	private $totalPrice;
 
-	/**
-	 * @param string|int $number
-	 * @param \DateTime $dueDate
-	 * @param Account $account
-	 * @param PaymentInformation $payment
-	 * @param \DateTime|NULL $created
-	 * @param bool $hasPriceWithTax
-	 */
-	public function __construct($number, ?\DateTime $dueDate, ?Account $account, PaymentInformation $payment,
-								\DateTime $created = NULL, bool $hasPriceWithTax = FALSE) {
+	public function __construct(string $number, ?DateTime $dueDate, ?Account $account, PaymentInformation $payment,
+								?DateTime $created = NULL) {
 		$this->number = $number;
 		$this->dueDate = $dueDate;
 		$this->account = $account;
 		$this->payment = $payment;
-		$this->created = $created ? : new \DateTime();
-		$this->hasPriceWithTax = $hasPriceWithTax;
-
-		$this->validate();
-	}
-
-	/**
-	 * @return bool
-	 */
-	public function hasPriceWithTax(): bool {
-		return $this->hasPriceWithTax;
+		$this->created = $created ? : new DateTime();
 	}
 
 	/**
 	 * @param string $name
 	 * @param int|float $price
 	 * @param int|float $count
+	 * @param float|null $tax
 	 * @return Item
 	 */
-	public function addItem(string $name, $price, $count = 1) {
-		return $this->items[] = new Item($name, $price, $count);
-	}
-
-	/**
-	 * Validates properties
-	 *
-	 * @throws InvoiceException
-	 */
-	private function validate() {
-		if (!$this->number || !is_string($this->number) || !is_numeric($this->number)) {
-			throw InvoiceException::wrongType('non-empty string or numeric', $this->number);
-		}
+	public function addItem(string $name, $price, $count = 1, ?float $tax = null): Item {
+		return $this->items[] = new Item($name, $price, $count, $tax ?: $this->getPayment()->getTax());
 	}
 
 	/////////////////////////////////////////////////////////////////
 
 	/**
-	 * @return int|string
+	 * @param float|int|string|null $totalPrice
+	 * @return static
 	 */
-	public function getNumber() {
+	public function setTotalPrice($totalPrice) {
+		$this->totalPrice = $totalPrice;
+
+		return $this;
+	}
+
+	public function getNumber(): string {
 		return $this->number;
 	}
 
-	/**
-	 * @return \DateTime
-	 */
-	public function getDueDate(): ?\DateTime {
+	public function getDueDate(): ?DateTime {
 		return $this->dueDate;
 	}
 
-	/**
-	 * @return Account
-	 */
 	public function getAccount(): ?Account {
 		return $this->account;
 	}
 
-	/**
-	 * @return PaymentInformation
-	 */
 	public function getPayment(): PaymentInformation {
 		return $this->payment;
 	}
 
-	/**
-	 * @return \DateTime
-	 */
-	public function getCreated(): \DateTime {
+	public function getCreated(): DateTime {
 		return $this->created;
 	}
 
@@ -125,28 +93,21 @@ class Order {
 	}
 
 	/**
+	 * @param ICalculator $calculator
 	 * @param bool $useTax
-	 * @return float
+	 * @return float|int|string
 	 */
-	public function getTotalPrice(bool $useTax = false): float {
-		$total = 0;
-		if ($useTax && $this->getPayment()->getTax() !== NULL && !$this->hasPriceWithTax()) {
-			$tax = $this->getPayment()->getTax() + 1;
-		} else {
-			$tax = 1;
-		}
-		if ($useTax === FALSE && $this->hasPriceWithTax()) {
-			foreach ($this->getItems() as $item) {
-				$price = $item->getPrice() - ($item->getPrice() / ($this->getPayment()->getTax() + 1.0)) * $this->getPayment()->getTax();
-				$total += $price * $item->getCount();
-			}
-		} else {
-			foreach ($this->getItems() as $item) {
-				$total += $item->getPrice() * $item->getCount();
-			}
+	public function getTotalPrice(ICalculator $calculator, bool $useTax = false) {
+		if ($this->totalPrice !== null) {
+			return $this->totalPrice;
 		}
 
-		return $total * $tax;
+		$total = 0;
+		foreach ($this->getItems() as $item) {
+			$total = $calculator->add($total, $item->getTotalPrice($calculator, $useTax));
+		}
+
+		return $total;
 	}
 	
 }

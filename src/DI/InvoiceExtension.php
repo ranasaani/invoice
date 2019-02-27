@@ -5,14 +5,10 @@ declare(strict_types=1);
 namespace WebChemistry\Invoice\DI;
 
 use Nette\DI\CompilerExtension;
-use WebChemistry\Invoice\Components\IPaginatorFactory;
-use WebChemistry\Invoice\Components\PaginatorFactory;
 use WebChemistry\Invoice\Data\Company;
-use WebChemistry\Invoice\Data\Template;
 use WebChemistry\Invoice\Formatter;
 use WebChemistry\Invoice\IFormatter;
 use WebChemistry\Invoice\Invoice;
-use WebChemistry\Invoice\InvoiceFactory;
 use WebChemistry\Invoice\ITranslator;
 use WebChemistry\Invoice\Renderers\IRenderer;
 use WebChemistry\Invoice\Renderers\PDFRenderer;
@@ -22,7 +18,7 @@ use WebChemistry\Invoice\Translator;
 
 class InvoiceExtension extends CompilerExtension {
 
-	/** @var array */
+	/** @var array[] */
 	public $defaults = [
 		'company' => [
 			'name' => null,
@@ -35,10 +31,9 @@ class InvoiceExtension extends CompilerExtension {
 			'hasTax' => false,
 		],
 		'lang' => 'en',
-		'invoiceFactory' => false,
 	];
 
-	public function loadConfiguration() {
+	public function loadConfiguration(): void {
 		$builder = $this->getContainerBuilder();
 		$config = $this->validateConfig($this->defaults);
 
@@ -64,10 +59,6 @@ class InvoiceExtension extends CompilerExtension {
 		$builder->addDefinition($this->prefix('invoice'))
 			->setFactory(Invoice::class);
 
-		if ($config['invoiceFactory']) {
-			$builder->addDefinition($this->prefix('invoiceFactory'))
-				->setFactory(InvoiceFactory::class);
-		}
 	}
 
 }

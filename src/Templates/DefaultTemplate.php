@@ -6,9 +6,11 @@ namespace WebChemistry\Invoice\Templates;
 
 use Nette\SmartObject;
 use Nette\Utils\Strings;
+use WebChemistry\Invoice\Calculators\ICalculator;
 use WebChemistry\Invoice\Components\Paginator;
 use WebChemistry\Invoice\Data\Company;
 use WebChemistry\Invoice\Data\Customer;
+use WebChemistry\Invoice\Data\Item;
 use WebChemistry\Invoice\Data\Order;
 use WebChemistry\Invoice\Formatter;
 use WebChemistry\Invoice\ITranslator;
@@ -51,6 +53,9 @@ class DefaultTemplate implements ITemplate {
 	/** @var Formatter */
 	private $formatter;
 
+	/** @var ICalculator */
+	private $calculator;
+
 	public function __construct(?ITranslator $translator = null, ?Formatter $formatter = null) {
 		$this->primary = new Color(6, 178, 194);
 		$this->font = new Color(52, 52, 53);
@@ -60,11 +65,12 @@ class DefaultTemplate implements ITemplate {
 		$this->formatter = $formatter ?: new Formatter();
 	}
 
-	public function build(IRenderer $renderer, Customer $customer, Order $order, Company $company): string {
+	public function build(ICalculator $calculator, IRenderer $renderer, Customer $customer, Order $order, Company $company): string {
 		$this->renderer = $renderer;
 		$this->customer = $customer;
 		$this->order = $order;
 		$this->company = $company;
+		$this->calculator = $calculator;
 
 		$this->renderer->createNew();
 
@@ -101,35 +107,6 @@ class DefaultTemplate implements ITemplate {
 		$renderer = $this->renderer;
 		$half = ($renderer->width() - 553) / 2;
 
-		if ($this->company->hasTax() && $this->order->getPayment()->getTax() !== null) {
-			$renderer->rect(553, $offset, $renderer->width() - 553, 29, function (Settings $settings) {
-				$settings->setFillDrawColor($this->even);
-			});
-			$renderer->cell(553, $offset, $half, 29.0, Strings::upper($this->translator->translate('subtotal')) . ':', function (Settings $settings) {
-				$settings->fontFamily = 'sans';
-				$settings->fontStyle = $settings::FONT_STYLE_BOLD;
-				$settings->align = $settings::ALIGN_CENTER;
-			});
-			$renderer->cell(553 + $half, $offset, $half - 4, 29.0, $this->formatter->formatMoney($this->order->getTotalPrice(false), $this->order->getPayment()
-				->getCurrency()), function (Settings $settings) {
-				$settings->fontStyle = $settings::FONT_STYLE_NONE;
-			});
-			$offset += 29;
-
-			$renderer->rect(553, $offset, $renderer->width() - 553, 29, function (Settings $settings) {
-				$settings->setFillDrawColor($this->even);
-			});
-			$renderer->cell(553, $offset, $half, 29.0, Strings::upper($this->translator->translate('tax')) . ':', function (Settings $settings) {
-				$settings->fontFamily = 'sans';
-				$settings->fontStyle = $settings::FONT_STYLE_BOLD;
-				$settings->align = $settings::ALIGN_CENTER;
-			});
-			$renderer->cell(553 + $half, $offset, $half - 4, 29.0, $this->order->getPayment()->getTax() * 100 . ' %', function (Settings $settings) {
-				$settings->fontStyle = $settings::FONT_STYLE_NONE;
-			});
-			$offset += 29;
-		}
-
 		$renderer->rect(553, $offset, $renderer->width() - 553, 29, function (Settings $settings) {
 			$settings->setFillDrawColor($this->even);
 		});
@@ -137,7 +114,7 @@ class DefaultTemplate implements ITemplate {
 			553 + $half, $offset + 29,
 			573 + $half, $offset,
 			$renderer->width(), $offset,
-			$renderer->width(), $offset + 29
+			$renderer->width(), $offset + 29,
 		], function (Settings $settings) {
 			$settings->setFillDrawColor($this->primary);
 		});
@@ -146,7 +123,7 @@ class DefaultTemplate implements ITemplate {
 			$settings->fontStyle = $settings::FONT_STYLE_BOLD;
 			$settings->align = $settings::ALIGN_CENTER;
 		});
-		$renderer->cell(553 + $half, $offset, $half - 4, 29.0, $this->formatter->formatMoney($this->order->getTotalPrice($this->company->hasTax()), $this->order->getPayment()->getCurrency()), function (Settings $settings) {
+		$renderer->cell(553 + $half, $offset, $half - 4, 29.0, $this->formatter->formatMoney($this->order->getTotalPrice($this->calculator, $this->company->hasTax()), $this->order->getPayment()->getCurrency()), function (Settings $settings) {
 			$settings->fontFamily = 'sans';
 			$settings->fontStyle = $settings::FONT_STYLE_BOLD;
 			$settings->fontColor = Color::white();
@@ -156,6 +133,9 @@ class DefaultTemplate implements ITemplate {
 	protected function buildItems(int $offset, array $items): int {
 		$renderer = $this->renderer;
 
+		/**
+		 * @var Item $item
+		 */
 		foreach ($items as $i => $item) {
 			$renderer->rect(0, $offset, $renderer->width(), 29, function (Settings $settings) use ($i) {
 				$settings->setFillDrawColor($i % 2 === 1 ? $this->even : $this->odd);
@@ -163,12 +143,6 @@ class DefaultTemplate implements ITemplate {
 			$renderer->rect(0, $offset + 30, $renderer->width(), 0.1, function (Settings $settings) {
 				$settings->setFillDrawColor($this->even->darken(10));
 			});
-
-			if ($this->order->hasPriceWithTax() && $this->order->getPayment()->getTax()) {
-				$price = $item->getPrice() - ($item->getPrice() / ($this->order->getPayment()->getTax() + 1.0)) * $this->order->getPayment()->getTax();
-			} else {
-				$price = $item->getPrice();
-			}
 
 			// Data
 			$renderer->cell(33, $offset, 360, 29.0, $item->getName(), function (Settings $settings) {
@@ -178,13 +152,17 @@ class DefaultTemplate implements ITemplate {
 				$settings->align = $settings::ALIGN_LEFT;
 				$settings->fontSize = 5;
 			});
-			$renderer->cell(393, $offset, 100, 29.0, $this->formatter->formatNumber($item->getCount()), function (Settings $settings) {
+			$renderer->cell(353, $offset, 80, 29.0, $this->formatter->formatNumber($item->getCount()), function (Settings $settings) {
 				$settings->align = $settings::ALIGN_CENTER;
 			});
 
-			$renderer->cell(493, $offset, 140, 29.0, $this->formatter->formatMoney($price, $this->order->getPayment()->getCurrency()));
+			$renderer->cell(443, $offset, 160, 29.0, $this->formatter->formatMoney($item->getPrice(), $this->order->getPayment()->getCurrency()));
 
-			$renderer->cell(670, $offset, 123, 29.0, $this->formatter->formatMoney($price * $item->getCount(), $this->order->getPayment()->getCurrency()), function (Settings $settings) {
+			if ($this->company->hasTax()) {
+				$renderer->cell(593, $offset, 70, 29.0, $item->getTax() * 100 . '%');
+			}
+
+			$renderer->cell(670, $offset, 123, 29.0, $this->formatter->formatMoney($item->getTotalPrice($this->calculator, $this->company->hasTax()), $this->order->getPayment()->getCurrency()), function (Settings $settings) {
 				$settings->fontFamily = 'sans';
 				$settings->fontStyle = $settings::FONT_STYLE_BOLD;
 			});
@@ -217,27 +195,19 @@ class DefaultTemplate implements ITemplate {
 			$settings->fontStyle = $settings::FONT_STYLE_BOLD;
 			$settings->fontSize = 9;
 		});
-		$renderer->cell(393, 307, 100, 29.0, Strings::upper($this->translator->translate('count')), function (Settings $settings) {
+		$renderer->cell(353, 307, 80, 29.0, Strings::upper($this->translator->translate('count')), function (Settings $settings) {
 			$settings->align = $settings::ALIGN_CENTER;
 		});
 
-		$renderer->cell(493, 307, 140, 29.0, Strings::upper($this->translator->translate('pricePerItem')));
+		$renderer->cell(443, 307, 160, 29.0, Strings::upper($this->translator->translate('pricePerItem')));
+
+		if ($this->company->hasTax()) {
+			$renderer->cell(593, 307, 70, 29.0, Strings::upper($this->translator->translate('tax')));
+		}
 
 		$renderer->cell($renderer->width() - 80, 307, 60, 29.0, Strings::upper($this->translator->translate('total')), function (Settings $settings) {
 			$settings->fontColor = $this->even;
 		});
-		//$renderer->rect(20, 307, 360, 29);
-		/*
-
-
-
-		$this->image->text(Strings::upper($this->translate('total')), 2250, 1205, function (Font $font) {
-			$font->color($this->template->getColorOdd());
-			$font->file($this->template->getFontBold());
-			$font->valign('center');
-			$font->align('center');
-			$font->size(37);
-		});*/
 	}
 
 	protected function buildHeader(): void {
@@ -247,7 +217,7 @@ class DefaultTemplate implements ITemplate {
 			0, 0,
 			0, 100,
 			245, 100,
-			312, 0
+			312, 0,
 		], function (Settings $settings) {
 			$settings->setFillDrawColor($this->font);
 		});
@@ -256,7 +226,7 @@ class DefaultTemplate implements ITemplate {
 			312, 0,
 			245, 100,
 			$renderer->width(), 100,
-			$renderer->height(), 0
+			$renderer->height(), 0,
 		], function (Settings $settings) {
 			$settings->setFillDrawColor($this->primary);
 		});
@@ -266,14 +236,14 @@ class DefaultTemplate implements ITemplate {
 			0, 106,
 			168, 106,
 			188, 120,
-			200, 100
+			200, 100,
 		]);
 
 		$renderer->polygon([
 			200, 100,
 			188, 120,
 			205, 125,
-			222, 100
+			222, 100,
 		], function (Settings $settings) {
 			$settings->setFillDrawColor($this->primary->darken(15));
 		});
@@ -282,7 +252,7 @@ class DefaultTemplate implements ITemplate {
 			222, 100,
 			217, 106,
 			242, 106,
-			247, 100
+			247, 100,
 		], function (Settings $settings) {
 			$settings->setFillDrawColor($this->primary);
 		});
@@ -411,7 +381,7 @@ class DefaultTemplate implements ITemplate {
 			440, 170,
 			452, 162,
 			$renderer->width(), 162,
-			$renderer->width(), 160
+			$renderer->width(), 160,
 		]);
 
 		$iconCb = function (Settings $settings) {
@@ -472,7 +442,7 @@ class DefaultTemplate implements ITemplate {
 		// Total price
 		$renderer->cell(450, 190 + ($multiplier * 15), 1, null, 'd', $iconCb);
 		$renderer->cell(465, 189 + ($multiplier * 15), 1, null, Strings::upper($this->translator->translate('totalPrice')) . ':', $sectionCb);
-		$renderer->cell(465 + 100, 189 + ($multiplier * 15), 1, null, $this->formatter->formatMoney($this->order->getTotalPrice($this->company->hasTax()), $this->order->getPayment()->getCurrency()), $textCb);
+		$renderer->cell(465 + 100, 189 + ($multiplier * 15), 1, null, $this->formatter->formatMoney($this->order->getTotalPrice($this->calculator, $this->company->hasTax()), $this->order->getPayment()->getCurrency()), $textCb);
 	}
 
 	protected function buildFooter(Paginator $paginator): void {
@@ -488,19 +458,6 @@ class DefaultTemplate implements ITemplate {
 			$settings->align = $settings::ALIGN_RIGHT;
 			$settings->fontSize = 6;
 		});
-
-/*
-		$this->image->rectangle(0, $this->image->getHeight() - 80, $this->image->getWidth(), $this->image->getHeight(), function (AbstractShape $shape) {
-			$shape->background($this->template->getFontColor());
-		});
-
-		$this->image->text($this->template->getFooter(), (int) ($this->image->getWidth() / 2), $this->image->getHeight() - 40, function (Font $font) {
-			$font->file($this->template->getFont());
-			$font->color($this->template->getColorOdd());
-			$font->align('center');
-			$font->size(24);
-			$font->valign('center');
-		});*/
 	}
 
 }

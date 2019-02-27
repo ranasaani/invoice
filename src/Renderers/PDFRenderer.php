@@ -97,7 +97,7 @@ class PDFRenderer implements IRenderer {
 	}
 
 	public function output(): string {
-		return $this->pdf->Output();
+		return $this->pdf->Output('S');
 	}
 
 	protected function setFont(Settings $settings): void {
