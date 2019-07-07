@@ -6,6 +6,7 @@ use Contributte\Invoice\Calculators\FloatCalculator;
 use Contributte\Invoice\Calculators\ICalculator;
 use Contributte\Invoice\Data\Company;
 use Contributte\Invoice\Data\Customer;
+use Contributte\Invoice\Data\Order;
 use Contributte\Invoice\Renderers\IRenderer;
 use Contributte\Invoice\Renderers\PDFRenderer;
 use Contributte\Invoice\Responses\PdfResponse;
