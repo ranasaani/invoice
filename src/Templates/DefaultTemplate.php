@@ -22,6 +22,8 @@ class DefaultTemplate implements ITemplate
 
 	use SmartObject;
 
+	private const ITEMS_PER_PAGE = 15;
+
 	/** @var Color */
 	private $primary;
 
@@ -55,6 +57,9 @@ class DefaultTemplate implements ITemplate
 	/** @var ICalculator */
 	private $calculator;
 
+	/** @var int */
+	private $itemsPerPage = self::ITEMS_PER_PAGE;
+
 	/** @var callable[] */
 	public $onBuild = [];
 
@@ -66,6 +71,13 @@ class DefaultTemplate implements ITemplate
 		$this->odd = Color::white();
 		$this->translator = $translator ?: new Translator();
 		$this->formatter = $formatter ?: new Formatter();
+	}
+
+	public function setItemsPerPage(int $itemsPerPage): self
+	{
+		$this->itemsPerPage = $itemsPerPage;
+
+		return $this;
 	}
 
 	public function build(ICalculator $calculator, IRenderer $renderer, Customer $customer, Order $order, Company $company): string
@@ -82,7 +94,7 @@ class DefaultTemplate implements ITemplate
 		$this->renderer->addFont('sans', 'OpenSans-Semibold.php', Settings::FONT_STYLE_BOLD);
 		$this->renderer->addFont('icons', 'pe.php');
 
-		$paginator = new Paginator($this->order->getItems(), 15);
+		$paginator = new Paginator($this->order->getItems(), $this->itemsPerPage);
 
 		while ($paginator->nextPage()) {
 			if (!$paginator->isFirstPage()) {
