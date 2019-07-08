@@ -55,6 +55,9 @@ class DefaultTemplate implements ITemplate
 	/** @var ICalculator */
 	private $calculator;
 
+	/** @var callable[] */
+	public $onBuild = [];
+
 	public function __construct(?ITranslator $translator = null, ?Formatter $formatter = null)
 	{
 		$this->primary = new Color(6, 178, 194);
@@ -79,7 +82,7 @@ class DefaultTemplate implements ITemplate
 		$this->renderer->addFont('sans', 'OpenSans-Semibold.php', Settings::FONT_STYLE_BOLD);
 		$this->renderer->addFont('icons', 'pe.php');
 
-		$paginator = new Paginator($this->order->getItems(), 19);
+		$paginator = new Paginator($this->order->getItems(), 15);
 
 		while ($paginator->nextPage()) {
 			if (!$paginator->isFirstPage()) {
@@ -99,6 +102,10 @@ class DefaultTemplate implements ITemplate
 			}
 
 			$this->buildFooter($paginator);
+
+			foreach ($this->onBuild as $build) {
+				$build($paginator, $this->renderer, $this->formatter);
+			}
 		}
 
 		return $this->renderer->output();
