@@ -13,35 +13,39 @@ use Contributte\Invoice\Templates\DefaultTemplate;
 use Contributte\Invoice\Templates\ITemplate;
 use Contributte\Invoice\Translator;
 use Nette\DI\CompilerExtension;
+use Nette\Schema\Expect;
+use Nette\Schema\Schema;
 
 class InvoiceExtension extends CompilerExtension
 {
 
-	/** @var mixed[] */
-	public $defaults = [
-		'company' => [
-			'name' => null,
-			'town' => null,
-			'address' => null,
-			'zip' => null,
-			'country' => null,
-			'tin' => null,
-			'vaTin' => null,
-			'hasTax' => false,
-		],
-		'lang' => 'en',
-	];
+	public function getConfigSchema(): Schema {
+		return Expect::structure([
+			'company' => Expect::structure([
+				'name' => Expect::string()->required(),
+				'town' => Expect::string()->required(),
+				'address' => Expect::string()->required(),
+				'zip' => Expect::string()->required(),
+				'country' => Expect::string()->required(),
+				'tin' => Expect::string(),
+				'vaTin' => Expect::string(),
+				'hasTax' => Expect::bool(false),
+			]),
+			'lang' => Expect::string('en'),
+			'template' => Expect::string(DefaultTemplate::class),
+		]);
+	}
 
 	public function loadConfiguration(): void
 	{
 		$builder = $this->getContainerBuilder();
-		$config = $this->validateConfig($this->defaults);
+		$config = (array) $this->getConfig();
 
 		$builder->addDefinition($this->prefix('company'))
-			->setFactory(Company::class, array_values($config['company']));
+			->setFactory(Company::class, array_values((array) $config['company']));
 
 		$builder->addDefinition($this->prefix('template'))
-			->setFactory(DefaultTemplate::class)
+			->setFactory($config['template'])
 			->setType(ITemplate::class);
 
 		$builder->addDefinition($this->prefix('renderer'))
