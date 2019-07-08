@@ -34,4 +34,9 @@ interface IRenderer
 
 	public function output(): string;
 
+	/**
+	 * @return mixed
+	 */
+	public function getSource();
+
 }
