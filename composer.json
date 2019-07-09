@@ -43,5 +43,10 @@
 		]
 	},
 	"minimum-stability": "RC",
-	"prefer-stable": true
+	"prefer-stable": true,
+	"extra": {
+		"branch-alias": {
+			"dev-master": "3.1.x-dev"
+		}
+	}
 }
