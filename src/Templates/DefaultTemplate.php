@@ -2,6 +2,8 @@
 
 namespace Contributte\Invoice\Templates;
 
+use Contributte\Invoice\Formatter;
+use Contributte\Invoice\IFormatter;
 use Nette\SmartObject;
 use Nette\Utils\Strings;
 use Contributte\Invoice\Calculators\ICalculator;
@@ -10,7 +12,6 @@ use Contributte\Invoice\Data\Company;
 use Contributte\Invoice\Data\Customer;
 use Contributte\Invoice\Data\Item;
 use Contributte\Invoice\Data\Order;
-use Contributte\Invoice\Formatter;
 use Contributte\Invoice\ITranslator;
 use Contributte\Invoice\Renderers\Color;
 use Contributte\Invoice\Renderers\IRenderer;
@@ -51,7 +52,7 @@ class DefaultTemplate implements ITemplate
 	/** @var ITranslator */
 	private $translator;
 
-	/** @var Formatter */
+	/** @var IFormatter */
 	private $formatter;
 
 	/** @var ICalculator */
@@ -63,7 +64,7 @@ class DefaultTemplate implements ITemplate
 	/** @var callable[] */
 	public $onBuild = [];
 
-	public function __construct(?ITranslator $translator = null, ?Formatter $formatter = null)
+	public function __construct(?ITranslator $translator = null, ?IFormatter $formatter = null)
 	{
 		$this->primary = new Color(6, 178, 194);
 		$this->font = new Color(52, 52, 53);
