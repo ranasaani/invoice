@@ -12,6 +12,13 @@ php 7.1
 composer require contributte/invoice
 ```
 
+Example
+```php
+$invoice = new Contributte\Invoice\Invoice(Contributte\Invoice\Preview\PreviewFactory::createCompany());
+
+$invoice->send(Contributte\Invoice\Preview\PreviewFactory::createCustomer(), Contributte\Invoice\Preview\PreviewFactory::createOrder());
+```
+
 ## Usage
 
 ### Company
@@ -85,10 +92,6 @@ $this->sendResponse($invoice->createResponse($customer, $order));
 
 ```php
 $invoice->send(Contributte\Invoice\Preview\PreviewFactory::createCustomer(), Contributte\Invoice\Preview\PreviewFactory::createOrder());
-```
-
-```php
-
 ```
 
 ## Nette DI
