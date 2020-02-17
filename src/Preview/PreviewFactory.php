@@ -3,6 +3,7 @@
 namespace Contributte\Invoice\Preview;
 
 use Contributte\Invoice\Data\Account;
+use Contributte\Invoice\Data\Company;
 use Contributte\Invoice\Data\Customer;
 use Contributte\Invoice\Data\Order;
 use Contributte\Invoice\Data\PaymentInformation;
@@ -10,6 +11,11 @@ use DateTime;
 
 final class PreviewFactory
 {
+
+	public static function createCompany(): Company
+	{
+		return new Company('Contributte', 'Prague', 'U haldy', '110 00', 'Czech Republic', '08304431', 'CZ08304431');
+	}
 
 	public static function createCustomer(): Customer
 	{
