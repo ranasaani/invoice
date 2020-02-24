@@ -2,6 +2,7 @@
 	"name": "contributte/invoice",
 	"type": "library",
 	"description": "Library for easily and quickly creating invoices for customers.",
+	"license": ["MIT"],
 	"tags": [
 		"contributte",
 		"invoice"
