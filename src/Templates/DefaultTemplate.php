@@ -74,6 +74,26 @@ class DefaultTemplate implements ITemplate
 		$this->formatter = $formatter ?: new Formatter();
 	}
 
+	public function setPrimary(Color $primary): void
+	{
+		$this->primary = $primary;
+	}
+
+	public function setFont(Color $font): void
+	{
+		$this->font = $font;
+	}
+
+	public function setEven(Color $even): void
+	{
+		$this->even = $even;
+	}
+
+	public function setOdd(Color $odd): void
+	{
+		$this->odd = $odd;
+	}
+
 	public function setItemsPerPage(int $itemsPerPage): self
 	{
 		$this->itemsPerPage = $itemsPerPage;

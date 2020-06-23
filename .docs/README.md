@@ -84,6 +84,19 @@ class CustomFormatter implements IFormatter {
 }
 ```
 
+Customize colors, fonts:
+
+```php
+$template = new Contributte\Invoice\Templates\DefaultTemplate();
+
+$template->setEven(new Contributte\Invoice\Renderers\Color(0, 0, 0));
+$template->setFont(new Contributte\Invoice\Renderers\Color(0, 0, 0));
+$template->setEven(new Contributte\Invoice\Renderers\Color(0, 0, 0));
+$template->setOdd(new Contributte\Invoice\Renderers\Color(0, 0, 0));
+
+$invoice = new Contributte\Invoice\Invoice($company, $template);
+```
+
 ## Translation
 
 First, create class that implements ITranslator
