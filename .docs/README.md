@@ -7,6 +7,7 @@
 - [Preview with minimal setup](#preview-with-minimal-setup)
 - [Entities](#entities)
 - [Customizing](#customizing)
+- [Translation](#translation)
 - [Generating invoices](#generating-invoices)
 - [Generating preview](#generating-preview)
 - [Neon configuration](#neon-configuration)
@@ -81,6 +82,54 @@ use Contributte\Invoice\IFormatter;
 class CustomFormatter implements IFormatter {
 	
 }
+```
+
+## Translation
+
+First, create class that implements ITranslator
+
+```php
+class Translator implements Contributte\Invoice\ITranslator {
+
+    private static $translations = [
+        'subscriber' => 'Subscriber',
+        'vat' => 'VAT number',
+        'vaTin' => 'VATIN',
+        'date' => 'Date',
+        'invoice' => 'Invoice',
+        'invoiceNumber' => 'Invoice number',
+        'taxPay' => '',
+        'notTax' => 'VAT unregistered',
+        'paymentData' => 'Payment information',
+        'page' => 'Page',
+        'from' => '/',
+        'totalPrice' => 'Total price',
+        'item' => 'Item',
+        'count' => 'Quantity',
+        'pricePerItem' => 'Price per item',
+        'total' => 'Total',
+        'accountNumber' => 'Account number',
+        'swift' => 'Swift',
+        'iban' => 'Iban',
+        'varSymbol' => 'Variable symbol',
+        'constSymbol' => 'Constant symbol',
+        'tax' => 'TAX',
+        'subtotal' => 'Subtotal',
+        'dueDate' => 'Due date',
+     ];
+    
+    public function translate(string $message): string
+	{
+		return self::$translations[$message];
+	}
+
+}
+```
+
+and pass it to the invoice and template
+
+```php
+$invoice = new Contributte\Invoice\Invoice($company, new Contributte\Invoice\Templates\DefaultTemplate(new Translator()));
 ```
 
 ## Generating invoices
