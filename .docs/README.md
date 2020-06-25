@@ -131,10 +131,9 @@ class Translator implements Contributte\Invoice\ITranslator {
         'dueDate' => 'Due date',
      ];
     
-    public function translate(string $message): string
-	{
+    public function translate(string $message): string {
 		return self::$translations[$message];
-	}
+    }
 
 }
 ```
