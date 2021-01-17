@@ -1,3 +1,0 @@
-#!/usr/bin/sh
-
-vendor/bin/phpstan analyse src --level=7
