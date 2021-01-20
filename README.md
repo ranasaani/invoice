@@ -1,19 +1,21 @@
-<h1 align=center>Invoice</h1>
+![](https://heatbadger.now.sh/github/readme/contributte/invoice/)
 
 <p align=center>
-    PDF invoice generator
+    <a href="https://github.com/contributte/invoice/actions"><img src="https://badgen.net/github/checks/contributte/invoice"></a>
+    <a href="https://coveralls.io/r/contributte/invoice"><img src="https://badgen.net/coveralls/c/github/contributte/invoice"></a>
+    <a href="https://packagist.org/packages/contributte/invoice"><img src="https://badgen.net/packagist/dm/contributte/invoice"></a>
+    <a href="https://packagist.org/packages/contributte/invoice"><img src="https://badgen.net/packagist/v/contributte/invoice"></a>
+</p>
+<p align=center>
+    <a href="https://packagist.org/packages/contributte/invoice"><img src="https://badgen.net/packagist/php/contributte/invoice"></a>
+    <a href="https://github.com/contributte/invoice"><img src="https://badgen.net/github/license/contributte/invoice"></a>
+    <a href="https://bit.ly/ctteg"><img src="https://badgen.net/badge/support/gitter/cyan"></a>
+    <a href="https://bit.ly/cttfo"><img src="https://badgen.net/badge/support/forum/yellow"></a>
+    <a href="https://contributte.org/partners.html"><img src="https://badgen.net/badge/sponsor/donations/F96854"></a>
 </p>
 
 <p align=center>
-  <a href="https://travis-ci.org/contributte/invoice"><img src="https://img.shields.io/travis/contributte/invoice.svg?style=flat-square"></a>
-  <a href="https://coveralls.io/r/contributte/invoice"><img src="https://img.shields.io/coveralls/contributte/invoice.svg?style=flat-square"></a>
-  <a href="https://packagist.org/packages/contributte/invoice"><img src="https://img.shields.io/packagist/dm/contributte/invoice.svg?style=flat-square"></a>
-  <a href="https://packagist.org/packages/contributte/invoice"><img src="https://img.shields.io/packagist/v/contributte/invoice.svg?style=flat-square"></a>
-  <a href="http://bit.ly/ctteg"><img src="https://img.shields.io/gitter/room/contributte/contributte.svg?style=flat-square"></a>
-<p>
-
-<p align=center>
-Website 🚀 <a href="https://contributte.org">contributte.org</a> | Contact 👨🏻‍💻 <a href="https://f3l1x.io">f3l1x.io</a> | Twitter 🐦 <a href="https://twitter.com/contributte">@contributte</a>
+    Website 🚀 <a href="https://contributte.org">contributte.org</a> | Contact 👨🏻‍💻 <a href="https://f3l1x.io">f3l1x.io</a> | Twitter 🐦 <a href="https://twitter.com/contributte">@contributte</a>
 </p>
 
 ## Usage
